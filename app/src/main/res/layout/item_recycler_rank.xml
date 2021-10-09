@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/shape_rounded_16dp"
+        android:backgroundTint="@color/dark_trans"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:layout_height="wrap_content">
+
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".03"
+            android:id="@+id/tv_rank_rank_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_normal_X1"
+            android:textColor="@color/orange"
+            android:text="7"
+            />
+
+        <ImageView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_rank_rank_list"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias=".03"
+            android:id="@+id/iv_avatar_rank_list"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/avatar_1"
+            />
+
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/iv_avatar_rank_list"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/tv_username_rank_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_normal_X1"
+            android:text="Hyakkimaru"
+            app:layout_constraintHorizontal_bias=".03"
+            />
+
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias=".97"
+            android:id="@+id/tv_points_rank_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_normal_X1"
+            android:text="35897"
+            />
+
+        <ImageView
+            android:id="@+id/iv_star_rank_list"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_points_rank_list"
+            app:layout_constraintHorizontal_bias=".98"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_points"
+            app:tint="@color/orange" />
+
+        <ImageView
+            android:id="@+id/iv_team_rank_list"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_username_rank_list"
+            app:layout_constraintRight_toLeftOf="@id/iv_star_rank_list"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/logo_chi"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

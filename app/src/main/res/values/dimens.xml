@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_small_X1">12sp</dimen>
+    <dimen name="text_size_small_X2">14sp</dimen>
+    <dimen name="text_size_normal_X1">16sp</dimen>
+    <dimen name="text_size_normal_X2">18sp</dimen>
+    <dimen name="text_size_big_X1">22sp</dimen>
+    <dimen name="text_size_big_X2">26sp</dimen>
+
+    <dimen name="margin_hor_page_X1">20dp</dimen>
+    <dimen name="margin_hor_page_X2">32dp</dimen>
+
+    <dimen name="question_box">360dp</dimen>
+    <dimen name="option_box">180dp</dimen>
+
+</resources>

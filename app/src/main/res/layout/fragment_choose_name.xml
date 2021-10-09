@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.register.ChooseNameFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_register"
+        android:scaleType="centerCrop"
+        />
+
+
+    <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
+        android:id="@+id/text_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hi\nWelcome to NBA Quiz"
+        android:textColor="@color/cocoa_milk"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_big_X1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_choose_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintVertical_bias=".3"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        android:layout_marginHorizontal="@dimen/margin_hor_page_X2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose name"
+                android:textColor="@color/cocoa_milk"
+                android:textSize="@dimen/text_size_normal_X2"
+                android:layout_marginLeft="4dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                />
+
+            <ProgressBar
+                android:id="@+id/progress_choose_name"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
+
+        <com.some_package.nbaquiz.custom_view.CustomEditTextQuestrial
+            android:id="@+id/et_choose_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_normal_X2"
+            android:maxLines="1"
+            android:lines="1"
+            android:maxLength="10"
+            android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm0123456789-_."
+            android:backgroundTint="@color/cocoa_milk"
+            android:textColor="@color/cocoa_milk"
+            />
+
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+            android:id="@+id/tv_error_choose_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Not available"
+            android:textColor="@color/amber"
+            android:textSize="@dimen/text_size_small_X2"
+            android:layout_marginLeft="4dp"
+            />
+    </LinearLayout>
+
+
+    <com.some_package.nbaquiz.custom_view.CustomButtonRaleway
+        android:id="@+id/btn_next_choose_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/cocoa_milk"
+        android:textSize="@dimen/text_size_big_X2"
+        android:textAllCaps="false"
+        app:layout_constraintVertical_bias=".96"
+        android:text="Next"
+        app:layout_constraintHorizontal_bias=".9"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

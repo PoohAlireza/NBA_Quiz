@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main_activity"
+    app:startDestination="@id/mainPageFragment">
+
+    <fragment
+        android:id="@+id/mainPageFragment"
+        android:name="com.some_package.nbaquiz.ui.main.MainPageFragment"
+        android:label="fragment_main_page"
+        tools:layout="@layout/fragment_main_page" >
+        <action
+            android:id="@+id/action_mainPageFragment_to_rankingFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/rankingFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_profileFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_findRivalFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/findRivalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.some_package.nbaquiz.ui.main.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_mainPageFragment"
+            app:popUpTo="@id/mainPageFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/mainPageFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_rankingFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/rankingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rankingFragment"
+        android:name="com.some_package.nbaquiz.ui.main.RankingFragment"
+        android:label="fragment_ranking"
+        tools:layout="@layout/fragment_ranking" >
+        <action
+            android:id="@+id/action_rankingFragment_to_mainPageFragment"
+            app:popUpTo="@id/mainPageFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/mainPageFragment" />
+        <action
+            android:id="@+id/action_rankingFragment_to_profileFragment"
+            app:popUpTo="@id/rankingFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/findRivalFragment"
+        android:name="com.some_package.nbaquiz.ui.main.FindRivalFragment"
+        android:label="fragment_find_rival"
+        tools:layout="@layout/fragment_find_rival" >
+        <action
+            android:id="@+id/action_findRivalFragment_to_mainPageFragment"
+            app:popUpTo="@id/mainPageFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/mainPageFragment" />
+        <action
+            android:id="@+id/action_findRivalFragment_to_rankingFragment"
+            app:popUpTo="@id/findRivalFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/rankingFragment" />
+        <action
+            android:id="@+id/action_findRivalFragment_to_profileFragment"
+            app:popUpTo="@id/findRivalFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/profileFragment" />
+    </fragment>
+</navigation>

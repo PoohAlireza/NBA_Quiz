@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/shape_rounded_16dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/dark_trans"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_item_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            >
+
+            <ImageView
+                android:id="@+id/iv_avatar_item_search"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/avatar_12"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                android:id="@+id/tv_username_item_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_normal_X1"
+                android:textColor="@color/cocoa_milk"
+                android:text="Hyakkimaru"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+           android:id="@+id/ll_points_item_search"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           app:layout_constraintTop_toTopOf="@id/ll_item_search"
+           app:layout_constraintBottom_toBottomOf="@id/ll_item_search"
+           app:layout_constraintRight_toRightOf="parent"
+           app:layout_constraintLeft_toRightOf="@id/ll_item_search"
+           app:layout_constraintHorizontal_bias=".15"
+           app:layout_constraintVertical_bias=".2"
+           >
+
+           <ImageView
+               android:layout_width="24dp"
+               android:layout_height="24dp"
+               android:src="@drawable/ic_points"
+               app:tint="@color/orange"
+               />
+
+           <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text=" Points: "
+               android:textColor="@color/cocoa_milk"
+               android:textSize="@dimen/text_size_small_X2"
+               android:layout_gravity="center"
+               />
+
+           <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+               android:id="@+id/tv_points_item_search"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="36554"
+               android:textColor="@color/orange"
+               android:textSize="@dimen/text_size_small_X2"
+               android:layout_gravity="center"
+               />
+
+
+       </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/ll_points_item_search"
+            app:layout_constraintBottom_toBottomOf="@id/ll_item_search"
+            app:layout_constraintLeft_toLeftOf="@id/ll_points_item_search"
+            >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_team"
+                app:tint="@color/orange"
+                />
+
+            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Team: "
+                android:textColor="@color/cocoa_milk"
+                android:textSize="@dimen/text_size_small_X2"
+                android:layout_gravity="center"
+                />
+
+            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                android:id="@+id/tv_team_item_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OKC"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/text_size_small_X2"
+                android:layout_gravity="center"
+                />
+
+
+        </LinearLayout>
+
+       <com.some_package.nbaquiz.custom_view.CustomButtonQuestrial
+           android:id="@+id/btn_invite_item_search"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textSize="@dimen/text_size_normal_X2"
+           android:background="@drawable/shape_rounded_16dp"
+           android:backgroundTint="@color/cocoa_milk"
+           android:text="invite"
+           android:textAllCaps="false"
+           android:textColor="@color/dark"
+           app:layout_constraintRight_toRightOf="parent"
+           app:layout_constraintBottom_toBottomOf="parent"
+           />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>

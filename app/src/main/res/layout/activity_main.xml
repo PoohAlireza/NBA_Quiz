@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_main"
+    tools:context=".ui.main.MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        custom:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/nc_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@null"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/iv_team_background_main_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo_chi"
+            android:alpha=".5"
+            />
+
+        <LinearLayout
+            custom:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@drawable/shape_bg_bnv"
+            android:orientation="horizontal"
+            android:layoutDirection="ltr"
+            android:id="@+id/bnv_main"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/cl_left_bnv"
+                android:foreground="?attr/selectableItemBackground"
+                >
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/ic_profile"
+                    android:id="@+id/iv_left_bnv"
+                    custom:tint="@color/white"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_middle_bnv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_middle_bnv"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_ball"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:tint="@color/orange" />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/cl_right_bnv"
+                android:foreground="?attr/selectableItemBackground"
+                >
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/ic_rank"
+                    android:id="@+id/iv_right_bnv"
+                    custom:tint="@color/white"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/v_line_main_activity"
+            android:layout_width="58dp"
+            android:layout_height="3dp"
+            android:background="@drawable/shape_ic_ball_bnv"
+            custom:layout_constraintRight_toRightOf="parent"
+            custom:layout_constraintLeft_toLeftOf="parent"
+            custom:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            custom:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/shape_stats"
+            android:elevation="4dp"
+            android:id="@+id/cl_toolbar"
+            >
+
+            <LinearLayout
+                android:id="@+id/ll_tf"
+                android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintHorizontal_bias=".1"
+                custom:layout_constraintVertical_bias=".2"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_points"
+                    custom:tint="@color/orange"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_main_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8755"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintTop_toBottomOf="@id/ll_tf"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintHorizontal_bias=".15"
+
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_team"
+                    custom:tint="@color/orange"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_team_main_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHI"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp"
+                    />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_tr"
+                android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintHorizontal_bias=".9"
+                custom:layout_constraintVertical_bias=".2"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_ball"
+                    custom:tint="@color/orange"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_games_main_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="687"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintTop_toBottomOf="@id/ll_tr"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintHorizontal_bias=".85"
+
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_wins"
+                    custom:tint="@color/orange"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_wins_main_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="548"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp"
+                    />
+
+
+            </LinearLayout>
+
+            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                android:id="@+id/tv_username_main_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/gray"
+                android:text="Hyakkimaru"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintVertical_bias=".30"
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/iv_profile_main_activity"
+            android:background="@drawable/shape_bg_avatar"
+            android:padding="10dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:src="@drawable/avatar_1"
+            custom:layout_constraintLeft_toLeftOf="parent"
+            custom:layout_constraintRight_toRightOf="parent"
+            custom:layout_constraintTop_toTopOf="parent"
+            custom:layout_constraintBottom_toBottomOf="parent"
+            android:elevation="20dp"
+            custom:layout_constraintVertical_bias=".1"/>
+
+        <fragment
+            android:id="@+id/fragment"
+            android:name="com.some_package.nbaquiz.ui.main.MainNavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            custom:defaultNavHost="true"
+            custom:navGraph="@navigation/nav_main"
+            custom:layout_constraintTop_toBottomOf="@id/cl_toolbar"
+            custom:layout_constraintBottom_toTopOf="@id/bnv_main"
+            android:layout_marginTop="16dp"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

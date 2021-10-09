@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.main.RankingFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:paddingHorizontal="8dp"
+            android:layout_width="match_parent"
+            android:layout_weight=".8"
+            android:layout_height="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_rank_1"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:background="@drawable/shape_rounded_16dp"
+                android:backgroundTint="@color/dark_trans"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintVertical_bias=".3"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_team_rank_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha=".2"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/logo_gsw"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_rank_1_ranking_fragment"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/avatar_3"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    custom:layout_constraintVertical_bias=".15"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_rank_1_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_normal_X1"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:text="36589"
+                    custom:layout_constraintVertical_bias=".85"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_username_rank_1_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toBottomOf="@id/iv_rank_1_ranking_fragment"
+                    custom:layout_constraintBottom_toTopOf="@id/tv_points_rank_1_ranking_fragment"
+                    custom:layout_constraintVertical_bias=".4"
+                    android:text="Hyakkimaru"
+
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_rank_2"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:background="@drawable/shape_rounded_16dp"
+                android:backgroundTint="@color/dark_trans"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintRight_toLeftOf="@id/cl_rank_1"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintVertical_bias=".45"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_team_rank_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha=".2"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/logo_hou"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_rank_2_ranking_fragment"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/avatar_12"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    custom:layout_constraintVertical_bias=".15"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_rank_2_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_normal_X1"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:text="35988"
+                    custom:layout_constraintVertical_bias=".85"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_username_rank_2_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toBottomOf="@id/iv_rank_2_ranking_fragment"
+                    custom:layout_constraintBottom_toTopOf="@id/tv_points_rank_2_ranking_fragment"
+                    custom:layout_constraintVertical_bias=".4"
+                    android:text="Hinata"
+
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_rank_3"
+                android:layout_width="100dp"
+                android:layout_height="140dp"
+                android:background="@drawable/shape_rounded_16dp"
+                android:backgroundTint="@color/dark_trans"
+                custom:layout_constraintTop_toTopOf="parent"
+                custom:layout_constraintLeft_toRightOf="@id/cl_rank_1"
+                custom:layout_constraintRight_toRightOf="parent"
+                custom:layout_constraintBottom_toBottomOf="parent"
+                custom:layout_constraintVertical_bias=".6"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_team_rank_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha=".2"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/logo_lal"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_rank_3_ranking_fragment"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/avatar_11"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    custom:layout_constraintVertical_bias=".15"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_rank_3_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_normal_X1"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    custom:layout_constraintBottom_toBottomOf="parent"
+                    android:text="33119"
+                    custom:layout_constraintVertical_bias=".85"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_username_rank_3_ranking_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    custom:layout_constraintLeft_toLeftOf="parent"
+                    custom:layout_constraintRight_toRightOf="parent"
+                    custom:layout_constraintTop_toBottomOf="@id/iv_rank_3_ranking_fragment"
+                    custom:layout_constraintBottom_toTopOf="@id/tv_points_rank_3_ranking_fragment"
+                    custom:layout_constraintVertical_bias=".4"
+                    android:text="July"
+
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/view_rank_1_corner"
+                android:layout_width="wrap_content"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/bg_rank"
+                    />
+                <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/dark"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:layout_centerInParent="true"
+                    />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/view_rank_2_corner"
+                android:layout_width="wrap_content"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/bg_rank"
+                    />
+                <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textColor="@color/dark"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:layout_centerInParent="true"
+                    />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/view_rank_3_corner"
+                android:layout_width="wrap_content"
+                custom:layout_constraintLeft_toLeftOf="parent"
+                custom:layout_constraintTop_toTopOf="parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/bg_rank"
+                    />
+                <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3"
+                    android:textColor="@color/dark"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:layout_centerInParent="true"
+                    />
+
+            </RelativeLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingHorizontal="28dp"
+            android:id="@+id/rv_ranking_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.2"
+            />
+
+
+    </LinearLayout>
+
+
+    <com.some_package.nbaquiz.custom_view.CustomLoading
+        android:id="@+id/loading_ranking"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        custom:layout_constraintRight_toRightOf="parent"
+        custom:layout_constraintLeft_toLeftOf="parent"
+        custom:layout_constraintTop_toTopOf="parent"
+        custom:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

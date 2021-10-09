@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root_profile_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.main.ProfileFragment">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_fragment_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_trans"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:elevation="4dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintVertical_bias=".4"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:orientation="vertical"
+            android:layoutDirection="ltr"
+            android:layout_marginVertical="32dp"
+            android:weightSum="4"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layoutDirection="ltr"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_ball"
+                        custom:tint="@color/orange"
+                        android:layout_marginRight="8dp"
+                        />
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Games : "
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        />
+
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:id="@+id/tv_games_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="654"
+                        android:textColor="@color/orange"
+                        android:textSize="14sp"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_wins"
+                        custom:tint="@color/orange"
+                        android:layout_marginRight="8dp"
+                        />
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wins : "
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        />
+
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:id="@+id/tv_wins_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="484"
+                        android:textColor="@color/orange"
+                        android:textSize="14sp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layoutDirection="ltr"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_points"
+                        custom:tint="@color/orange"
+                        android:layout_marginRight="8dp"
+                        />
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Points : "
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        />
+
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:id="@+id/tv_points_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="9886"
+                        android:textColor="@color/orange"
+                        android:textSize="14sp"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_team"
+                        custom:tint="@color/orange"
+                        android:layout_marginRight="8dp"
+                        />
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Team : "
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        />
+
+                    <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                        android:id="@+id/tv_team_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CHI"
+                        android:textColor="@color/orange"
+                        android:textSize="14sp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2.2"
+                android:gravity="center"
+                >
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_profile"
+                    android:layout_marginRight="8dp"
+                    app:tint="@color/orange" />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_username_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray"
+                    android:text="Hyakkimaru"
+                    />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/shape_bg_avatar"
+        android:padding="10dp"
+        android:src="@drawable/avatar_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="4dp"
+        android:id="@+id/iv_fragment_profile"
+        />
+
+    <com.some_package.nbaquiz.custom_view.CustomButtonQuestrial
+        android:id="@+id/btn_edit_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="32dp"
+        android:text="Edit"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@color/orange"
+        android:gravity="left"
+        app:layout_constraintVertical_bias=".2"
+        android:background="@drawable/shape_rounded_16dp"
+        android:backgroundTint="@color/dark_trans"
+        app:layout_constraintTop_toBottomOf="@id/cv_fragment_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:drawableRight="@drawable/ic_pen"
+        android:drawableTint="@color/gray"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

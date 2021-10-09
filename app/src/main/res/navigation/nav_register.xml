@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_register_activity"
+    app:startDestination="@id/chooseNameFragment">
+
+    <fragment
+        android:id="@+id/chooseNameFragment"
+        android:name="com.some_package.nbaquiz.ui.register.ChooseNameFragment"
+        android:label="fragment_choose_name"
+        tools:layout="@layout/fragment_choose_name" >
+        <action
+            android:id="@+id/action_chooseNameFragment_to_chooseAvatarFragment"
+            app:popUpTo="@id/chooseNameFragment"
+            app:destination="@id/chooseAvatarFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chooseAvatarFragment"
+        android:name="com.some_package.nbaquiz.ui.register.ChooseAvatarFragment"
+        android:label="fragment_choose_avatar"
+        tools:layout="@layout/fragment_choose_avatar" >
+        <action
+            android:id="@+id/action_chooseAvatarFragment_to_chooseNameFragment"
+            app:popUpTo="@id/chooseAvatarFragment"
+            app:destination="@id/chooseNameFragment" />
+    </fragment>
+</navigation>

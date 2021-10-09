@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="24dp">
+
+    <View
+        android:layout_width="24dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/shape_bottom_sheet_top_line"
+        android:backgroundTint="@color/dark"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:paddingVertical="8dp"
+        android:text="Avatar"
+        android:textColor="@color/cocoa_milk"
+        android:textSize="@dimen/text_size_normal_X2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_avatars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:paddingVertical="8dp"
+        android:text="Team"
+        android:textColor="@color/cocoa_milk"
+        android:textSize="@dimen/text_size_normal_X2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_teams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:orientation="horizontal"
+        android:layoutDirection="rtl"
+        >
+
+        <com.some_package.nbaquiz.custom_view.CustomButtonQuicksand
+            android:id="@+id/btn_apply_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small_X2"
+            android:text="Apply"
+            android:background="@drawable/shape_rounded_16dp"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/cocoa_milk"
+            android:textColor="@color/dark"
+            android:elevation="4dp"
+            android:foreground="?attr/selectableItemBackground"
+            />
+
+        <com.some_package.nbaquiz.custom_view.CustomButtonQuicksand
+            android:id="@+id/btn_cancel_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@color/cocoa_milk"
+            android:textSize="@dimen/text_size_small_X2"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:layout_marginHorizontal="8dp"
+            android:foreground="?attr/selectableItemBackground"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
+
