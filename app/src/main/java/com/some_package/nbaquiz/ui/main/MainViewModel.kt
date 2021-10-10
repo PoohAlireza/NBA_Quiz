@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -24,15 +25,44 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     val dataStateRanks:LiveData<DataState<List<User>>>
         get() = _dataStateRanks
 
+    private val _dataStateEditProfile:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateEditProfile:LiveData<DataState<String>>
+        get() = _dataStateEditProfile
+
+    private val _dataStateSearchedUser:MutableLiveData<DataState<List<User>>> = MutableLiveData()
+    val dataStateSearchedUser:LiveData<DataState<List<User>>>
+        get() = _dataStateSearchedUser
+
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
     }
-
 
     fun getRanks(){
         viewModelScope.launch {
             firebaseRepository.getRanks().collect {
                 _dataStateRanks.value = it
+            }
+        }
+    }
+
+    fun editProfile(avatar:Int? , team:Int?){
+        var mAvatar:Int? = null
+        var mTeam:Int? = null
+        if (avatar != _userData.value!!.avatar) mAvatar = avatar
+        if (team != _userData.value!!.team) mTeam = team
+
+        viewModelScope.launch {
+            firebaseRepository.editProfile(mAvatar,mTeam).collect {
+                _dataStateEditProfile.value = it
+            }
+        }
+
+    }
+
+    fun searchUser(username:String){
+        viewModelScope.launch {
+            firebaseRepository.searchUser(username.toLowerCase()).collect {
+                _dataStateSearchedUser.value = it
             }
         }
     }

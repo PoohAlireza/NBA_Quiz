@@ -17,7 +17,7 @@ import com.some_package.nbaquiz.interfaces.OnAvatarSelected
 import com.some_package.nbaquiz.util.StaticHolder
 import java.util.*
 
-class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , private val listener:OnApplyProfileEditClicked) : BottomSheetDialogFragment() {
+class BottomSheetEdit(private val listener:OnApplyProfileEditClicked) : BottomSheetDialogFragment() {
 
     private lateinit var avatarRV: RecyclerView
     private lateinit var teamRV: RecyclerView
@@ -25,6 +25,12 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
     private lateinit var teamsList: ArrayList<Drawable?>
     private lateinit var applyBTN:Button
     private lateinit var cancelBTN:Button
+
+    private var avatarIndex:Int = 0
+    private var teamIndex:Int = 0
+
+    private var avatarChosen:Int = avatarIndex
+    private var teamChosen:Int = teamIndex
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,6 +47,10 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
         return R.style.CustomBottomSheetDialog
     }
 
+    override fun onStop() {
+        super.onStop()
+
+    }
 
 
     private fun init(view:View) {
@@ -63,13 +73,14 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
         avatarRV.scrollToPosition(scrollToUser)
         val scrollToTeam = if (teamIndex >2) teamIndex-2 else teamIndex
         teamRV.scrollToPosition(scrollToTeam)
+
     }
 
     private fun setupRecycler() {
         avatarRV.layoutManager =LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         avatarRV.adapter = RecyclerAvatarAdapter(requireContext(), avatarsList, avatarIndex,object : OnAvatarSelected{
             override fun onSelected(image: Drawable?, index: Int) {
-               avatarIndex = index
+               avatarChosen = index
             }
 
         })
@@ -77,7 +88,7 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
         teamRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         teamRV.adapter = RecyclerAvatarAdapter(requireContext(),teamsList,teamIndex,object : OnAvatarSelected{
             override fun onSelected(image: Drawable?, index: Int) {
-                teamIndex = index
+                teamChosen = index
             }
 
         })
@@ -92,7 +103,7 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
 
     private fun setupApplyButton(){
         applyBTN.setOnClickListener {
-            listener.onClicked(avatarIndex,teamIndex)
+            listener.onClicked(avatarChosen,teamChosen)
         }
     }
 
@@ -111,6 +122,18 @@ class BottomSheetEdit(private var avatarIndex:Int , private var teamIndex:Int , 
         for(i in 0..29){
             teamsList.add(ContextCompat.getDrawable(requireContext(), StaticHolder.team_logo[i]))
         }
+    }
+
+
+
+    fun avatarIndexChanged(avatarIndex:Int){
+        this.avatarIndex = avatarIndex
+        this.avatarChosen = avatarIndex
+    }
+
+    fun teamIndexChanged(teamIndex:Int){
+        this.teamIndex = teamIndex
+        this.teamChosen = teamIndex
     }
 
 

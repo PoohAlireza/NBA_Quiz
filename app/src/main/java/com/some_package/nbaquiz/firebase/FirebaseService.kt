@@ -10,5 +10,7 @@ interface FirebaseService {
     suspend fun registerUser(user: User):Flow<DataState<User>>
     suspend fun checkUsername(username:String):Flow<DataState<String>>
     suspend fun getRanks():Flow<DataState<List<User>>>
+    suspend fun editProfile(avatar:Int? , team:Int?):Flow<DataState<String>>
+    suspend fun searchUser(username:String):Flow<DataState<List<User>>>
 
 }

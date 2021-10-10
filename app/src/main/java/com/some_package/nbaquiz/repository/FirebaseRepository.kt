@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -95,5 +96,65 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     }
 
+    override suspend fun editProfile(avatar:Int? , team:Int?): Flow<DataState<String>> = callbackFlow {
+        offer(DataState.Loading)
 
+        if (avatar !=null && team !=null){
+            firebaseProvider.fireStore.collection(firebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
+                .update("avatar",avatar,"team",team).addOnSuccessListener {
+
+                    userSharedPref.updateUserPref(avatar = avatar ,team = team)
+                    offer(DataState.Success("updated"))
+
+                }.addOnFailureListener {
+                    offer(DataState.Error(it))
+                }
+        }
+
+        else if (avatar !=null && team == null){
+            firebaseProvider.fireStore.collection(firebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
+                .update("avatar",avatar).addOnSuccessListener {
+
+                    userSharedPref.updateUserPref(avatar = avatar ,team = null)
+                    offer(DataState.Success("updated"))
+
+                }.addOnFailureListener {
+                    offer(DataState.Error(it))
+                }
+        }
+
+        else if (avatar ==null && team != null){
+            firebaseProvider.fireStore.collection(firebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
+                .update("team",team).addOnSuccessListener {
+
+                    userSharedPref.updateUserPref(avatar = null ,team = team)
+                    offer(DataState.Success("updated"))
+
+                }.addOnFailureListener {
+                    offer(DataState.Error(it))
+                }
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun searchUser(username: String): Flow<DataState<List<User>>> = callbackFlow {
+        offer(DataState.Loading)
+        firebaseProvider.fireStore.collection(firebaseProvider.USERS_COLLECTION_KEY).whereGreaterThanOrEqualTo("lowerCaseUsername",username).get().addOnSuccessListener {
+            val userList:ArrayList<User> = ArrayList()
+            for (ds in it.documents){
+                userList.add(ds.toObject(User::class.java)!!)
+            }
+            offer(DataState.Success(userList))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+
+    }
 }

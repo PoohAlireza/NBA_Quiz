@@ -17,6 +17,7 @@ import com.some_package.nbaquiz.R
 import com.some_package.nbaquiz.custom_view.BottomSheetEdit
 import com.some_package.nbaquiz.interfaces.OnApplyProfileEditClicked
 import com.some_package.nbaquiz.interfaces.OnAvatarSelected
+import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,10 +41,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
+
+        setupBottomSheet()
         observeUserData()
+        observeEditProfile()
         initProperties()
         setProfileInMiddle()
-        setupBottomSheet()
         setupEditButton()
     }
 
@@ -73,6 +76,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         viewModel.userData.observe(viewLifecycleOwner, Observer {
             teamTV.text = StaticHolder.teams_name[it.team!!]
             avatarIV.setImageDrawable(ResourcesCompat.getDrawable(resources, StaticHolder.avatars[it.avatar!!], null))
+            bottomSheetDialog.avatarIndexChanged(it.avatar!!)
+            bottomSheetDialog.teamIndexChanged(it.team!!)
         })
     }
 
@@ -102,19 +107,42 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun setupEditButton(){
         editBTN.setOnClickListener {
             bottomSheetDialog.show(parentFragmentManager,null)
+            StaticHolder.fullScreen(activity)
         }
     }
 
     private fun setupBottomSheet(){
-        bottomSheetDialog = BottomSheetEdit(viewModel.userData.value!!.avatar!!,viewModel.userData.value!!.team!! , object : OnApplyProfileEditClicked{
+        bottomSheetDialog = BottomSheetEdit(object : OnApplyProfileEditClicked{
             override fun onClicked(avatarIndex: Int, teamIndex: Int) {
-                //check difference and do your best
-                //1. avatar changed OR
-                //2. team changed OR
-                //3. both changed OR
-                //4. nothing changed
+                val avatar = viewModel.userData.value!!.avatar
+                val team = viewModel.userData.value!!.team
+                if (avatarIndex == avatar && teamIndex == team){
+                    bottomSheetDialog.dismiss()
+                    return
+                }
+
+                viewModel.editProfile(avatarIndex,teamIndex)
+                bottomSheetDialog.dismiss()
+
             }
 
+        })
+    }
+
+
+    private fun observeEditProfile(){
+        viewModel.dataStateEditProfile.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Success ->{
+                    viewModel.initUserData()
+                }
+                is DataState.Loading ->{
+
+                }
+                is DataState.Error ->{
+
+                }
+            }
         })
     }
 

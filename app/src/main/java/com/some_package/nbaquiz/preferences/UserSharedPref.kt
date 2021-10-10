@@ -28,10 +28,11 @@ class UserSharedPref @Inject constructor(@PrefModule.UserPref private val shared
         editor.apply()
     }
 
-    fun updateUserPref(team: Int, avatar: Int) {
+    fun updateUserPref(team: Int?, avatar: Int?) {
+        if (avatar == null && team == null) return
         val editor: Editor = sharedPreferences.edit()
-        editor.putInt("avatar", avatar)
-        editor.putInt("team", team)
+        if (avatar !=null) editor.putInt("avatar", avatar)
+        if (team != null) editor.putInt("team", team)
         editor.apply()
     }
 
@@ -47,6 +48,7 @@ class UserSharedPref @Inject constructor(@PrefModule.UserPref private val shared
         user.lowerCaseUsername = sharedPreferences.getString("lowerCaseUsername", "")
         return user
     }
+
 
 
 }
