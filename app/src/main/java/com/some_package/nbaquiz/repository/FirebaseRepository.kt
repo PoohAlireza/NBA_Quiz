@@ -2,9 +2,12 @@ package com.some_package.nbaquiz.repository
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
 import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.firebase.FirebaseService
+import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.preferences.UserSharedPref
 import com.some_package.nbaquiz.util.DataState
@@ -157,4 +160,64 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         }
 
     }
+
+    override suspend fun getQuestionsFromFireStore(): Flow<DataState<List<Question>>> = callbackFlow {
+        offer(DataState.Loading)
+        val questionList:ArrayList<Question> = ArrayList()
+        // todo we must get randomly
+        firebaseProvider.fireStore.collection(firebaseProvider.QUESTIONS_COLLECTION_KEY).limit(12).get().addOnSuccessListener {
+
+            for (ds in it.documents){
+                questionList.add(ds.toObject(Question::class.java)!!)
+            }
+            offer(DataState.Success(questionList))
+
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+    }
+
+    override suspend fun addQuestionsToRooms(collectionId: String, questionsList: List<Question>): Flow<DataState<String>> = callbackFlow {
+        // todo can be changed !!!
+        offer(DataState.Loading)
+        val mRoom:CollectionReference = firebaseProvider.fireStore.collection(firebaseProvider.ROOMS_COLLECTION_KEY).document(firebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
+        // add from 0 to n-1
+        for(i in 0 until questionsList.size-1){
+            mRoom.add(questionsList[i])
+        }
+        // add n
+        mRoom.add(questionsList[questionsList.size-1]).addOnSuccessListener {
+            offer(DataState.Success("all questions added"))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun getQuestionsFromRooms(collectionId: String): Flow<DataState<List<Question>>> = callbackFlow {
+        offer(DataState.Loading)
+        val mRoom:CollectionReference = firebaseProvider.fireStore.collection(firebaseProvider.ROOMS_COLLECTION_KEY).document(firebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
+        val questionsList:ArrayList<Question> = ArrayList()
+        mRoom.orderBy("id",Query.Direction.ASCENDING).get().addOnSuccessListener {
+
+            for (ds in it.documents){
+                questionsList.add(ds.toObject(Question::class.java)!!)
+                // TODO: 12/03/2021 be careful!!! : all questions must be deleted even P2 close app before get questions!!!!!! (in this case : delete by P2)
+                ds.reference.delete()
+            }
+
+            offer(DataState.Success(questionsList))
+
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
 }

@@ -7,6 +7,6 @@ import com.some_package.nbaquiz.R
 class WaitingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_waiting)
+        setContentView(R.layout.fragment_waiting)
     }
 }

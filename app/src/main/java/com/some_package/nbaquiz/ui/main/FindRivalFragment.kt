@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.some_package.nbaquiz.R
@@ -52,7 +53,7 @@ class FindRivalFragment : Fragment(R.layout.fragment_find_rival) {
 
     private fun setupFindButton() {
         findBTN.setOnClickListener {
-
+            Navigation.findNavController(findBTN).navigate(R.id.action_findRivalFragment_to_waitingFragment)
         }
     }
 
