@@ -109,6 +109,36 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_preparing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/cl_rival"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preparing"
+            android:textColor="@color/cocoa_milk"
+            android:textSize="18sp"
+            />
+
+        <com.some_package.nbaquiz.custom_view.CustomLoading
+            android:layout_width="30dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="bottom"
+            />
+
+
+
+    </LinearLayout>
+
 
 
     <com.some_package.nbaquiz.custom_view.CustomButtonRaleway

@@ -1,6 +1,7 @@
 package com.some_package.nbaquiz.ui.main
 
 import androidx.lifecycle.*
+import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.repository.FirebaseRepository
 import com.some_package.nbaquiz.repository.LocalRepository
@@ -33,6 +34,22 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     val dataStateSearchedUser:LiveData<DataState<List<User>>>
         get() = _dataStateSearchedUser
 
+    private val _dataStateJoiningRoom:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateJoiningRoom:LiveData<DataState<String>>
+        get() = _dataStateJoiningRoom
+
+    private val _dataStateCreationRoom:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateCreationRoom:LiveData<DataState<String>>
+        get() = _dataStateCreationRoom
+
+    private val _dataStateQuestions:MutableLiveData<DataState<List<Question>>> = MutableLiveData()
+    val dataStateQuestions:LiveData<DataState<List<Question>>>
+        get() = _dataStateQuestions
+
+    private val _dataStateStartingStatus:MutableLiveData<DataState<Boolean>> = MutableLiveData()
+    val dataStateStartingStatus:LiveData<DataState<Boolean>>
+        get() = _dataStateStartingStatus
+
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
     }
@@ -63,6 +80,43 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
         viewModelScope.launch {
             firebaseRepository.searchUser(username.toLowerCase()).collect {
                 _dataStateSearchedUser.value = it
+            }
+        }
+    }
+
+    fun joinRoom(){
+        viewModelScope.launch {
+            firebaseRepository.joinRoom().collect {
+                _dataStateJoiningRoom.value = it
+            }
+        }
+    }
+
+    fun createRoom(){
+        viewModelScope.launch {
+            firebaseRepository.createRoom().collect {
+                _dataStateCreationRoom.value = it
+            }
+        }
+    }
+
+    fun observeQuestionsAddingStatus(roomId:String){
+        viewModelScope.launch {
+            firebaseRepository.observeQuestionsAddingStatus(roomId).collect { questionsStatus ->
+                if (questionsStatus){
+                    firebaseRepository.getQuestionsFromRooms(roomId).collect {
+                        //getQuestions
+                        _dataStateQuestions.value=it
+                    }
+                }
+            }
+        }
+    }
+
+    fun changeStartingGameStatus(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.changeStartingGameStatus(roomId).collect {
+                _dataStateStartingStatus.value=it
             }
         }
     }

@@ -2,6 +2,9 @@ package com.some_package.nbaquiz.repository
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
@@ -11,18 +14,17 @@ import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.preferences.UserSharedPref
 import com.some_package.nbaquiz.util.DataState
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.lang.StringBuilder
 import javax.inject.Inject
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 @ExperimentalCoroutinesApi
 class FirebaseRepository @Inject constructor(private val firebaseProvider: FirebaseProvider , private val userSharedPref: UserSharedPref) : FirebaseService {
@@ -220,4 +222,134 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         }
     }
 
+
+    // 1. first try to join a room then observe ::: if be able to join go line 3 otherwise go line 2
+    // 2. we observe an exception so we try to create a room by calling createRoom method and go line 3
+    // 3. so we have a roomId and are in a room ::: if we are P1 go line 4 otherwise go line 5
+    // 4. we are P1 so must observe P2 and then if P2 joined get questions and create a room
+    // 5. we are P2 so must observe questions and room creation status
+    // ...
+    override suspend fun joinRoom(): Flow<DataState<String>> = callbackFlow {
+        offer(DataState.Loading)
+        val roomsRef = firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS)
+        roomsRef.get().addOnSuccessListener {
+            try {
+                var roomId:String? = null
+                if (it.exists()){
+                    for (ds in it.children){
+                        if (ds.exists() && ds.child("can-join").getValue(Boolean::class.java)!!){
+                            ds.child("can-join").ref.setValue(false)
+                            ds.child("P2-username").ref.setValue(userSharedPref.getUserPref().username)
+                            roomId = ds.key
+                            break
+                        }
+                    }
+                    if (roomId != null){
+                        //how to delay and then check username
+                            //todo delay 1 sec here
+                        if (roomsRef.child(roomId).child("P2-username").equals(userSharedPref.getUserPref().username)){
+                            offer(DataState.Success(roomId))
+                        }else{
+                            offer(DataState.Error(Exception("not_founded")))
+                        }
+                    }else{
+                        offer(DataState.Error(Exception("not_founded")))
+                    }
+                }
+            }catch (e:Exception){
+                offer(DataState.Error(e))
+            }
+
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun createRoom(): Flow<DataState<String>> = callbackFlow {
+        offer(DataState.Loading)
+        val roomId = firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS).push().key
+        val roomRef = firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS).child(roomId!!).ref
+        val children:HashMap<String,Any?> = HashMap()
+        children["can-join"] = true
+        children["start"] = false
+        children["questions-ready"] = false
+        children["P1-username"] = userSharedPref.getUserPref().username
+        children["P2-username"] = ""
+        children["P1-avatar"] = userSharedPref.getUserPref().avatar
+        children["P2-avatar"] = 0
+        children["P1-team"] = userSharedPref.getUserPref().team
+        children["P2-team"] = 0
+        children["P1-point"] = 0
+        children["P2-point"] = 0
+        children["P1-time"] = 0
+        children["P2-time"] = 0
+        children["P1-quarter"] = 1
+        children["P2-quarter"] = 1
+        children["P1-answer"] = firebaseProvider.ANSWER_EMPTY
+        children["P2-answer"] = firebaseProvider.ANSWER_EMPTY
+        roomRef.updateChildren(children).addOnSuccessListener {
+            offer(DataState.Success(roomId))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+
+    }
+
+    override suspend fun observeQuestionsAddingStatus(roomId:String): Flow<Boolean> = callbackFlow {
+        firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS).child(roomId).child("questions-ready").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists() && snapshot.getValue(Boolean::class.java)!!){
+                    //its true
+                    offer(snapshot.getValue(Boolean::class.java)!!)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun changeStartingGameStatus(roomId: String): Flow<DataState<Boolean>> = callbackFlow {
+
+        firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS).child(roomId).child("start").setValue(true).addOnSuccessListener {
+            offer(DataState.Success(true))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun observeStartingGameStatus(roomId: String): Flow<DataState<Boolean>> = callbackFlow {
+
+        firebaseProvider.realTime.getReference(firebaseProvider.REALTIME_ROOMS).child(roomId).child("start").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists() && snapshot.getValue(Boolean::class.java)!!){
+                    //start game
+                    offer(DataState.Success(true))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+        awaitClose{
+            cancel()
+        }
+    }
 }

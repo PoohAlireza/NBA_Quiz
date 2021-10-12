@@ -16,5 +16,9 @@ interface FirebaseService {
     suspend fun getQuestionsFromFireStore():Flow<DataState<List<Question>>>
     suspend fun addQuestionsToRooms(collectionId:String , questionsList:List<Question>):Flow<DataState<String>>
     suspend fun getQuestionsFromRooms(collectionId: String):Flow<DataState<List<Question>>>
-
+    suspend fun joinRoom():Flow<DataState<String>>
+    suspend fun createRoom():Flow<DataState<String>>
+    suspend fun observeQuestionsAddingStatus(roomId:String):Flow<Boolean>
+    suspend fun changeStartingGameStatus(roomId: String):Flow<DataState<Boolean>>
+    suspend fun observeStartingGameStatus(roomId: String):Flow<DataState<Boolean>>
 }
