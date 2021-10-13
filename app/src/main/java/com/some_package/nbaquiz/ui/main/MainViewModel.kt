@@ -10,13 +10,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
-class MainViewModel @Inject constructor(private val localRepository: LocalRepository , private val firebaseRepository: FirebaseRepository, private val savedStateHandle: SavedStateHandle ) : ViewModel() {
-
+class MainViewModel @Inject constructor(private val localRepository: LocalRepository , private val firebaseRepository: FirebaseRepository
+, private val savedStateHandle: SavedStateHandle ) : ViewModel() {
 
     private val _userData:MutableLiveData<User> = MutableLiveData()
     val userData:LiveData<User>
@@ -49,6 +48,18 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     private val _dataStateStartingStatus:MutableLiveData<DataState<Boolean>> = MutableLiveData()
     val dataStateStartingStatus:LiveData<DataState<Boolean>>
         get() = _dataStateStartingStatus
+
+    private val _dataStateMyStatus:MutableLiveData<DataState<Int>> = MutableLiveData()
+    val dataStateMyStatus:LiveData<DataState<Int>>
+        get() = _dataStateMyStatus
+
+    private val _dataStateObservePlayer2:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateObservePlayer2:LiveData<DataState<String>>
+        get() = _dataStateObservePlayer2
+
+    private val _dataStateRivalInfo:MutableLiveData<DataState<Map<String,Any?>>> = MutableLiveData()
+    val dataStateRivalInfo:LiveData<DataState<Map<String,Any?>>>
+        get() = _dataStateRivalInfo
 
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
@@ -84,6 +95,7 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
         }
     }
 
+    //P2
     fun joinRoom(){
         viewModelScope.launch {
             firebaseRepository.joinRoom().collect {
@@ -91,7 +103,45 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
             }
         }
     }
+    //P2
+    fun observeQuestionsAddingStatus(roomId:String){
+        viewModelScope.launch {
+            firebaseRepository.observeQuestionsAddingStatus(roomId).collect { questionsStatus ->
+                if (questionsStatus){
+                    getQuestionsFromRoom(roomId)
+                }
+            }
+        }
+    }
+    //P2
+    private fun getQuestionsFromRoom(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.getQuestionsFromRooms(roomId).collect {
+                //getQuestions
+                _dataStateQuestions.value=it
+            }
+        }
+    }
+    //P2
+    fun changeStartingGameStatus(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.changeStartingGameStatus(roomId).collect {
+                _dataStateStartingStatus.value=it
+            }
+        }
+    }
 
+    //P1 & P2
+    fun setImBusy(){
+        viewModelScope.launch {
+            firebaseRepository.setImBusy().collect {
+                _dataStateMyStatus.value = it
+            }
+        }
+    }
+
+
+    //P1
     fun createRoom(){
         viewModelScope.launch {
             firebaseRepository.createRoom().collect {
@@ -100,23 +150,61 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
         }
     }
 
-    fun observeQuestionsAddingStatus(roomId:String){
+    //P1
+    fun observeP2(roomId: String){
         viewModelScope.launch {
-            firebaseRepository.observeQuestionsAddingStatus(roomId).collect { questionsStatus ->
-                if (questionsStatus){
-                    firebaseRepository.getQuestionsFromRooms(roomId).collect {
-                        //getQuestions
-                        _dataStateQuestions.value=it
-                    }
+            firebaseRepository.observeP2(roomId).collect {
+                if (it is DataState.Success){
+                    _dataStateObservePlayer2.value = it
+                }
+            }
+        }
+    }
+    //P1
+    fun getRandomQuestionsFromFireStore(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.getQuestionsFromFireStore().collect {
+                if (it is DataState.Success){
+                    setQuestionsForRoom(roomId)
+                }
+            }
+        }
+    }
+    //P1
+    private fun setQuestionsForRoom(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.setQuestionsPreparingStatus(roomId).collect {
+                if (it is DataState.Success){
+                    setQuestionsPreparingStatus(roomId)
+                }
+            }
+        }
+    }
+    //P1
+    private fun setQuestionsPreparingStatus(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.setQuestionsPreparingStatus(roomId).collect {
+                if (it is DataState.Success){
+                    observeStartingGameStatus(roomId)
+                }
+            }
+        }
+    }
+    //P1
+    private fun observeStartingGameStatus(roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.observeStartingGameStatus(roomId).collect {
+                if(it is DataState.Success){
+                    _dataStateStartingStatus.value = it
                 }
             }
         }
     }
 
-    fun changeStartingGameStatus(roomId: String){
+    fun getRivalInfo(roomId: String,role:String){
         viewModelScope.launch {
-            firebaseRepository.changeStartingGameStatus(roomId).collect {
-                _dataStateStartingStatus.value=it
+            firebaseRepository.getPlayerInfo(roomId,role).collect {
+                _dataStateRivalInfo.value = it
             }
         }
     }

@@ -21,4 +21,12 @@ interface FirebaseService {
     suspend fun observeQuestionsAddingStatus(roomId:String):Flow<Boolean>
     suspend fun changeStartingGameStatus(roomId: String):Flow<DataState<Boolean>>
     suspend fun observeStartingGameStatus(roomId: String):Flow<DataState<Boolean>>
+    suspend fun setImBusy():Flow<DataState<Int>>
+    suspend fun observeP2(roomId:String):Flow<DataState<String>>
+    suspend fun setQuestionsPreparingStatus(roomId: String):Flow<DataState<Boolean>>
+    /**
+     * here my role argument is player identifier . for example : P1 OR P2
+     * this identifier attach to a string like : P1-username or P2-avatar
+     * */
+    suspend fun getPlayerInfo(roomId: String,playerRole:String):Flow<DataState<Map<String,Any?>>>
 }
