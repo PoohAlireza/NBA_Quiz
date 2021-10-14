@@ -187,7 +187,7 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     override suspend fun addQuestionsToRooms(collectionId: String, questionsList: List<Question>): Flow<DataState<String>> = callbackFlow {
         // todo can be changed !!!
         offer(DataState.Loading)
-        val mRoom:CollectionReference = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(FirebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
+        val mRoom = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(FirebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
         // add from 0 to n-1
         for(i in 0 until questionsList.size-1){
             mRoom.add(questionsList[i])
@@ -275,6 +275,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                         offer(DataState.Error(Exception("not_founded")))
                         Log.i(TAG, "joinRoom: error not found")
                     }
+                }else{
+                    offer(DataState.Error(Exception("not_founded")))
+                    Log.i(TAG, "joinRoom: error not found")
                 }
             }catch (e:Exception){
                 offer(DataState.Error(e))

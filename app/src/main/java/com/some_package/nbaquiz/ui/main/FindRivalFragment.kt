@@ -1,5 +1,6 @@
 package com.some_package.nbaquiz.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -18,6 +19,7 @@ import com.some_package.nbaquiz.R
 import com.some_package.nbaquiz.adapters.RecyclerSearchAdapter
 import com.some_package.nbaquiz.interfaces.OnInviteClicked
 import com.some_package.nbaquiz.model.User
+import com.some_package.nbaquiz.ui.match.MatchActivity
 import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +55,7 @@ class FindRivalFragment : Fragment(R.layout.fragment_find_rival) {
 
     private fun setupFindButton() {
         findBTN.setOnClickListener {
-            Navigation.findNavController(findBTN).navigate(R.id.action_findRivalFragment_to_waitingFragment)
+            startActivity(Intent(requireContext(),MatchActivity::class.java))
         }
     }
 

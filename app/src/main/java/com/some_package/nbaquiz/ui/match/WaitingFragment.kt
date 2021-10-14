@@ -1,4 +1,4 @@
-package com.some_package.nbaquiz.ui.main
+package com.some_package.nbaquiz.ui.match
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,11 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.some_package.nbaquiz.R
 import com.some_package.nbaquiz.custom_view.CustomLoading
 import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.model.Question
-import com.some_package.nbaquiz.ui.match.MatchActivity
 import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,8 +33,9 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     private lateinit var yourNameTV: TextView
     private lateinit var rivalNameTV: TextView
     private lateinit var cancelBTN: Button
-    private lateinit var progress:CustomLoading
-    private lateinit var preparing:LinearLayout
+    private lateinit var progress: CustomLoading
+    private lateinit var preparing: LinearLayout
+    private lateinit var nextBtn:Button
 
     ///
     private val questionsList:ArrayList<Question> = ArrayList()
@@ -43,12 +44,12 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     private val rivalInfo = HashMap<String,Any?>()
     ///
 
-    private val viewModel:MainViewModel by activityViewModels()
+    private val viewModel:MatchViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
-
+        observeMyInfo()
         observeMyStatus()
         setImBusy()
 
@@ -60,7 +61,10 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeStatingGameStatus()
         setupCancelButton()
         findRival()
+        setupStartMatchButton()
+
     }
+
 
     private fun init(view: View){
         yourAvatarIV = view.findViewById(R.id.iv_avatar_you_waiting_fragment)
@@ -68,12 +72,28 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         rivalAvatarIV = view.findViewById(R.id.iv_avatar_rival_waiting_fragment)
         rivalNameTV = view.findViewById(R.id.tv_username_rival_waiting_fragment)
         cancelBTN = view.findViewById(R.id.btn_cancel_waiting_fragment)
+        nextBtn = view.findViewById(R.id.btn_next_waiting_fragment)
         progress = view.findViewById(R.id.progress_waiting_fragment)
         preparing = view.findViewById(R.id.ll_preparing)
 
-        yourNameTV.text = viewModel.userData.value!!.username
-        yourAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(),StaticHolder.avatars[viewModel.userData.value!!.avatar!!]))
+        viewModel.initUserData()
 
+
+
+
+    }
+
+    private fun setupStartMatchButton(){
+        nextBtn.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("roomId",roomId)
+            bundle.putInt("myRole",myRole!!)
+            bundle.putString("username",rivalInfo["username"] as String)
+            bundle.putInt("avatar",rivalInfo["avatar"] as Int)
+            bundle.putInt("team",rivalInfo["team"] as Int)
+            Log.i(TAG, "startMatch: start shod")
+            Navigation.findNavController(nextBtn).navigate(R.id.action_waitingFragment_to_matchFragment,bundle)
+        }
     }
 
     private fun setImBusy(){
@@ -108,7 +128,12 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     }
 
 
-
+    private fun observeMyInfo(){
+        viewModel.userData.observe(viewLifecycleOwner, Observer {
+            yourNameTV.text = it!!.username
+            yourAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(), StaticHolder.avatars[it.avatar!!]))
+        })
+    }
     private fun observeMyStatus(){
         viewModel.dataStateMyStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -168,14 +193,8 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                 is DataState.Success ->{
                     // P1 & P2
                     // start game ::: we have room Id and questions
-                    val intent = Intent(activity,MatchActivity::class.java)
-                    intent.putExtra("roomId",roomId)
-                    intent.putExtra("myRole",myRole)
-                    intent.putExtra("username",rivalInfo["username"] as String)
-                    intent.putExtra("avatar",rivalInfo["avatar"] as Int)
-                    intent.putExtra("team",rivalInfo["team"] as Int)
-                    requireActivity().startActivity(intent)
-                    requireActivity().finish()
+
+                    startMatch()
 
                 }
             }
@@ -220,7 +239,9 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     // set info
                     rivalInfo.putAll(it.data!!)
                     rivalNameTV.text = it.data["username"] as String
-                    rivalAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(),StaticHolder.avatars[it.data["avatar"] as Int]))
+                    rivalAvatarIV.setImageDrawable(
+                        ContextCompat.getDrawable(requireContext(),
+                            StaticHolder.avatars[it.data["avatar"] as Int]))
                     progress.visibility = View.GONE
                     rivalNameTV.visibility = View.VISIBLE
                     rivalAvatarIV.visibility = View.VISIBLE
@@ -236,14 +257,14 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         })
     }
 
-
-
-
     private fun setupCancelButton(){
         cancelBTN.setOnClickListener {
 
         }
     }
 
+    private fun startMatch(){
+        nextBtn.callOnClick()
+    }
 
 }

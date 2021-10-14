@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_match"
+    app:startDestination="@id/waitingFragment">
+
+    <fragment
+        android:id="@+id/waitingFragment"
+        android:name="com.some_package.nbaquiz.ui.match.WaitingFragment"
+        android:label="WaitingFragment" >
+        <action
+            android:id="@+id/action_waitingFragment_to_matchFragment"
+            app:destination="@id/matchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/matchFragment"
+        android:name="com.some_package.nbaquiz.ui.match.MatchFragment"
+        android:label="MatchFragment" />
+</navigation>

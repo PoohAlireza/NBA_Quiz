@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_register"
-    tools:context=".ui.match.WaitingActivity">
+    tools:context=".ui.match.WaitingFragment">
 
 
     <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
@@ -160,5 +160,13 @@
 
 
 
+    <Button
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/btn_next_waiting_fragment"
+        android:background="@color/trans"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

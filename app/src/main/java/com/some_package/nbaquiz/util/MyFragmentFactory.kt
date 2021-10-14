@@ -6,6 +6,8 @@ import com.some_package.nbaquiz.ui.main.FindRivalFragment
 import com.some_package.nbaquiz.ui.main.MainPageFragment
 import com.some_package.nbaquiz.ui.main.ProfileFragment
 import com.some_package.nbaquiz.ui.main.RankingFragment
+import com.some_package.nbaquiz.ui.match.MatchFragment
+import com.some_package.nbaquiz.ui.match.WaitingFragment
 import com.some_package.nbaquiz.ui.register.ChooseAvatarFragment
 import com.some_package.nbaquiz.ui.register.ChooseNameFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +28,10 @@ class MyFragmentFactory  : FragmentFactory() {
             RankingFragment::javaClass.name -> RankingFragment()
             ProfileFragment::javaClass.name -> ProfileFragment()
             FindRivalFragment::javaClass.name -> FindRivalFragment()
+
+
+            WaitingFragment::javaClass.name -> WaitingFragment()
+            MatchFragment::javaClass.name -> MatchFragment()
 
             else ->super.instantiate(classLoader, className)
         }

@@ -75,18 +75,6 @@
             app:popUpTo="@id/findRivalFragment"
             app:popUpToInclusive="true"
             app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_findRivalFragment_to_waitingFragment"
-            app:destination="@id/waitingFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/waitingFragment"
-        android:name="com.some_package.nbaquiz.ui.main.WaitingFragment"
-        android:label="WaitingFragment" >
-        <action
-            android:id="@+id/action_waitingFragment_to_findRivalFragment"
-            app:popUpTo="@id/waitingFragment"
-            app:destination="@id/findRivalFragment" />
-    </fragment>
 </navigation>
