@@ -1,6 +1,5 @@
 package com.some_package.nbaquiz.ui.match
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,7 +43,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     private val rivalInfo = HashMap<String,Any?>()
     ///
 
-    private val viewModel:MatchViewModel by activityViewModels()
+    private val viewModel:WaitingViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -91,6 +90,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
             bundle.putString("username",rivalInfo["username"] as String)
             bundle.putInt("avatar",rivalInfo["avatar"] as Int)
             bundle.putInt("team",rivalInfo["team"] as Int)
+            bundle.putParcelableArrayList("questions",questionsList)
             Log.i(TAG, "startMatch: start shod")
             Navigation.findNavController(nextBtn).navigate(R.id.action_waitingFragment_to_matchFragment,bundle)
         }
@@ -179,10 +179,11 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     }
     private fun observeQuestionsStatus(){
         viewModel.dataStateQuestions.observe(viewLifecycleOwner, Observer {
-            when (it){
-                is DataState.Success ->{
+            when (it) {
+                is DataState.Success -> {
                     questionsList.addAll(it.data!!)
-                    notifyHeyIGotQuestions()
+                    Log.i(TAG, "observeQuestionsStatus: $questionsList")
+                    if(myRole == FirebaseProvider.GUEST) notifyHeyIGotQuestions()
                 }
             }
         })

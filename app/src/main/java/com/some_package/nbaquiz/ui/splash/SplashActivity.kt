@@ -16,11 +16,13 @@ import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
@@ -30,6 +32,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var hide: AnimationSet
     private lateinit var appear: AnimationSet
     private var index = 0
+
 
     @Inject @AppModule.Texts lateinit var texts:Array<String>
     @Inject @AppModule.Authors lateinit var authors:Array<String>

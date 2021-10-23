@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface FirebaseService {
 
+    //main
     suspend fun registerUser(user: User):Flow<DataState<User>>
     suspend fun checkUsername(username:String):Flow<DataState<String>>
     suspend fun getRanks():Flow<DataState<List<User>>>
     suspend fun editProfile(avatar:Int? , team:Int?):Flow<DataState<String>>
     suspend fun searchUser(username:String):Flow<DataState<List<User>>>
+
+    //find rival
     suspend fun getQuestionsFromFireStore():Flow<DataState<List<Question>>>
     suspend fun addQuestionsToRooms(collectionId:String , questionsList:List<Question>):Flow<DataState<String>>
     suspend fun getQuestionsFromRooms(collectionId: String):Flow<DataState<List<Question>>>
@@ -29,4 +32,13 @@ interface FirebaseService {
      * this identifier attach to a string like : P1-username or P2-avatar
      * */
     suspend fun getPlayerInfo(roomId: String,playerRole:String):Flow<DataState<Map<String,Any?>>>
+
+    //match
+    suspend fun addPoint(roomId:String , point:Int ,playerRole:String):Flow<DataState<String>>
+    suspend fun observePoint(roomId:String ,playerRole:String):Flow<DataState<Int>>
+    suspend fun setAnswerState(roomId:String , answer:Int ,playerRole:String):Flow<DataState<String>>
+    suspend fun observeAnswerState(roomId:String ,playerRole:String):Flow<DataState<Int>>
+    suspend fun setQuarterNumber(roomId:String):Flow<DataState<String>>
+    suspend fun observeQuarterNumber(roomId:String):Flow<DataState<Int>>
+    suspend fun addTime(roomId:String , time:Int ,playerRole:String):Flow<DataState<String>>
 }

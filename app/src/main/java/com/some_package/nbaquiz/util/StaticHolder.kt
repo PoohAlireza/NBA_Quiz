@@ -74,7 +74,6 @@ class StaticHolder {
             "WAS"
         )
 
-
         val team_logo = intArrayOf(
             R.drawable.logo_atl,
             R.drawable.logo_bkn,

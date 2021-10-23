@@ -125,18 +125,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:layoutDirection="ltr"
                     >
 
                     <LinearLayout
+                        android:layoutDirection="ltr"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:orientation="horizontal"
                         android:layout_weight="1">
 
                         <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                            android:id="@+id/tv_answer1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="1947"
+                            android:text="Option 1"
                             android:textSize="14sp"
                             android:textColor="@color/white"
                             android:gravity="center"
@@ -145,9 +148,10 @@
                             />
 
                         <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                            android:id="@+id/tv_answer2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="1956"
+                            android:text="Option 2"
                             android:textSize="14sp"
                             android:textColor="@color/white"
                             android:gravity="center"
@@ -162,12 +166,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:orientation="horizontal"
+                        android:layoutDirection="ltr"
                         android:layout_weight="1">
 
                         <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                            android:id="@+id/tv_answer3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="1939"
+                            android:text="Option 3"
                             android:textSize="14sp"
                             android:textColor="@color/white"
                             android:gravity="center"
@@ -176,9 +182,10 @@
                             />
 
                         <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                            android:id="@+id/tv_answer4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="1941"
+                            android:text="Option 4"
                             android:textSize="14sp"
                             android:textColor="@color/white"
                             android:gravity="center"
@@ -201,9 +208,10 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                    android:id="@+id/tv_question_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5 / 12"
+                    android:text="1 / 12"
                     android:textSize="12sp"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -215,6 +223,7 @@
                     />
 
                 <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                    android:id="@+id/tv_point_kind_match"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mid range"
@@ -228,11 +237,13 @@
                     />
 
                 <com.some_package.nbaquiz.custom_view.CustomTextViewQuestrial
+                    android:id="@+id/tv_question_match"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="When was basketball made ?"
+                    android:text="Question ?"
                     android:textSize="16sp"
                     android:textColor="@color/white"
+                    android:paddingHorizontal="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -253,24 +264,28 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_ball"
-                    app:tint="@color/darker_grey"
-                    />
-                <ImageView
+                    android:id="@+id/iv_ball_quarter1_match"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_ball"
                     app:tint="@color/white"
                     />
                 <ImageView
+                    android:id="@+id/iv_ball_quarter2_match"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_ball"
                     app:tint="@color/darker_grey"
                     />
                 <ImageView
+                    android:id="@+id/iv_ball_quarter3_match"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_ball"
+                    app:tint="@color/darker_grey"
+                    />
+                <ImageView
+                    android:id="@+id/iv_ball_quarter4_match"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_ball"
@@ -322,6 +337,7 @@
             >
 
             <ImageView
+                android:id="@+id/iv_team_you_match"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -362,6 +378,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layoutDirection="ltr"
                 android:gravity="center_horizontal"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -370,6 +387,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/iv_state_answer1_you_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -377,6 +395,7 @@
                     android:layout_weight="1"
                     />
                 <ImageView
+                    android:id="@+id/iv_state_answer2_you_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -384,6 +403,7 @@
                     android:layout_weight="1"
                     />
                 <ImageView
+                    android:id="@+id/iv_state_answer3_you_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -395,18 +415,38 @@
             </LinearLayout>
 
 
-            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_small_X2"
-                android:textColor="@color/cocoa_milk"
-                android:text="4 Points"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ll_card_you"
-                android:paddingVertical="4dp"
-                />
+                android:layoutDirection="ltr">
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_you_match"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    android:text="0"
+                    android:paddingVertical="4dp"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    android:text=" Point"
+                    android:paddingVertical="4dp"
+                    />
+
+            </LinearLayout>
+
+
 
 
 
@@ -428,6 +468,7 @@
             >
 
             <ImageView
+                android:id="@+id/iv_team_rival_match"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -459,7 +500,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_avatar_rival_match"
                 android:textColor="@color/cocoa_milk"
-                android:text="You"
+                android:text="Rival"
                 android:paddingVertical="4dp"
                 />
 
@@ -468,6 +509,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layoutDirection="ltr"
                 android:gravity="center_horizontal"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -476,6 +518,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/iv_state_answer1_rival_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -483,6 +526,7 @@
                     android:layout_weight="1"
                     />
                 <ImageView
+                    android:id="@+id/iv_state_answer2_rival_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -490,6 +534,7 @@
                     android:layout_weight="1"
                     />
                 <ImageView
+                    android:id="@+id/iv_state_answer3_rival_match"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_ball"
@@ -501,18 +546,36 @@
             </LinearLayout>
 
 
-            <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_small_X2"
-                android:textColor="@color/cocoa_milk"
-                android:text="5 Points"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ll_card_rival"
-                android:paddingVertical="4dp"
-                />
+                android:layoutDirection="ltr">
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:id="@+id/tv_points_rival_match"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    android:text="0"
+                    android:paddingVertical="4dp"
+                    />
+
+                <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small_X2"
+                    android:textColor="@color/cocoa_milk"
+                    android:text=" Point"
+                    android:paddingVertical="4dp"
+                    />
+
+            </LinearLayout>
 
 
 
@@ -527,7 +590,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ProgressBar
-                android:id="@+id/progress_timer"
+                android:id="@+id/progress_timer_match"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:indeterminateOnly="false"
@@ -539,7 +602,7 @@
                 />
 
             <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
-                android:id="@+id/tv_timer"
+                android:id="@+id/tv_timer_match"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_normal_X1"

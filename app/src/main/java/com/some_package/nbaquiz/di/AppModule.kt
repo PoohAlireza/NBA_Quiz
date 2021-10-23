@@ -1,6 +1,8 @@
 package com.some_package.nbaquiz.di
 
+import android.app.Dialog
 import androidx.fragment.app.FragmentFactory
+import com.some_package.nbaquiz.custom_view.CustomRestDialog
 import com.some_package.nbaquiz.util.MyFragmentFactory
 import dagger.Module
 import dagger.Provides
@@ -36,11 +38,6 @@ object AppModule {
     fun provideTexts():Array<String>{
         return arrayOf("“I can accept failure, everyone fails at something. But I can’t accept not trying.”","“Nothing is given. Everything is earned.”","“Good, better, best. Never let it rest. Until your good is better and your better is best.”")
     }
-
-
-
-
-
 
 
 
