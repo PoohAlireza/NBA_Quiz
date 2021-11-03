@@ -16,6 +16,7 @@ import com.some_package.nbaquiz.R
 import com.some_package.nbaquiz.custom_view.CustomLoading
 import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.model.Question
+import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,17 +54,6 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeDataStateMyInfo()
         observeDataStateMyStatus()
         setImBusy()
-
-//        observeJoin()
-//        observeQuestionsStatus()
-//        observeCreateRoom()
-//        player2Founded()
-//        observeRivalInfo()
-//        observeStatingGameStatus()
-//        setupCancelButton()
-//        findRival()
-//        setupStartMatchButton()
-
     }
 
 
@@ -141,9 +131,26 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeDataStateInvitation()
         observeDataStateInvitationAnswer()
         observeDataStateInvitationRoom()
+        observeDataStateQuestionsStatus()
+        observeDataStateStatingGameStatus()
+        observeDataStatePlayer2Appearance()
+        observeDataStateRivalInfo()
     }
     private fun runAsGuestFriendly(){
-        //await for room creation
+        val user = requireArguments().getParcelable<User>("user")
+        rivalInfo["username"] = user!!.username
+        rivalInfo["avatar"] = user.avatar
+        rivalInfo["team"] = user.team
+        rivalAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(),StaticHolder.avatars[user.avatar!!]))
+        rivalNameTV.text = user.username
+        progress.visibility = View.GONE
+        rivalNameTV.visibility = View.VISIBLE
+        rivalAvatarIV.visibility = View.VISIBLE
+        preparing.visibility = View.VISIBLE
+        observeDataStateJoinToInvitationRoom()
+        observeDataStateQuestionsStatus()
+        observeDataStateStatingGameStatus()
+        viewModel.observeRoomId()
     }
 
 
@@ -337,6 +344,26 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     myRole = FirebaseProvider.HOST
                     viewModel.setRoomIdForInvitedPlayer(requireArguments().getString("user_id")!!,roomId)
                     observeP2()
+                }
+                is DataState.Error -> {
+                    Log.i(TAG, "observeDataStateInvitationAnswer: $it")
+                }
+                is DataState.Loading -> {
+
+                }
+                is DataState.Warning -> {
+
+                }
+            }
+        })
+    }
+    private fun observeDataStateJoinToInvitationRoom(){
+        viewModel.dataStateJoinToInvitationRoom.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Success ->{
+                    roomId = it.data!!
+                    myRole = FirebaseProvider.GUEST
+                    viewModel.observeQuestionsAddingStatus(it.data)
                 }
                 is DataState.Error -> {
                     Log.i(TAG, "observeDataStateInvitationAnswer: $it")

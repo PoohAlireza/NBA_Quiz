@@ -1018,6 +1018,32 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
+    //P2
+    override suspend fun joinToInvitationRoom(roomId: String): Flow<DataState<String>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId)
+        ref.child("P2-username").get().addOnSuccessListener {
+            if (it.exists() && it.getValue(String::class.java).equals("waiting")){
+                it.ref.setValue(userSharedPref.getUserPref().username).addOnSuccessListener {
+                    ref.child("P2-avatar").setValue(userSharedPref.getUserPref().avatar).addOnSuccessListener {
+                        ref.child("P2-team").setValue(userSharedPref.getUserPref().team).addOnSuccessListener {
+                            offer(DataState.Success(roomId))
+                        }.addOnFailureListener { errorTeam ->
+                            offer(DataState.Error(errorTeam))
+                        }
+                    }.addOnFailureListener { errorAvatar ->
+                        offer(DataState.Error(errorAvatar))
+                    }
+                }.addOnFailureListener { errorUsername ->
+                    offer(DataState.Error(errorUsername))
+                }
+            }
+        }
+
+        awaitClose{
+            cancel()
+        }
+    }
     //P2 //?
     override suspend fun backToDefaultAfterDecline(): Flow<DataState<String>> = callbackFlow {
 

@@ -60,6 +60,10 @@ class WaitingViewModel @Inject constructor(private val localRepository: LocalRep
     val dataStateInvitationRoom:LiveData<DataState<String>>
         get() = _dataStateInvitationRoom
 
+    private val _dataStateJoinToInvitationRoom:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateJoinToInvitationRoom:LiveData<DataState<String>>
+        get() = _dataStateJoinToInvitationRoom
+
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
     }
@@ -206,6 +210,23 @@ class WaitingViewModel @Inject constructor(private val localRepository: LocalRep
             firebaseRepository.setRoomId(roomId = roomId , userId =  userId).collect {
 
             }
+        }
+    }
+
+    //P2
+    fun observeRoomId(){
+        viewModelScope.launch {
+            firebaseRepository.observeRoomId().collect {
+                if (it is DataState.Success){
+                    joinToInvitationRoom(it.data!!)
+                }
+            }
+        }
+    }
+
+    private suspend fun joinToInvitationRoom(roomId: String){
+        firebaseRepository.joinToInvitationRoom(roomId).collect {
+            _dataStateJoinToInvitationRoom.value = it
         }
     }
 

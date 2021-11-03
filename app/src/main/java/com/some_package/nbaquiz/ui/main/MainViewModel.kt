@@ -1,6 +1,7 @@
 package com.some_package.nbaquiz.ui.main
 
 import androidx.lifecycle.*
+import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.repository.FirebaseRepository
 import com.some_package.nbaquiz.repository.LocalRepository
@@ -83,6 +84,21 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     private suspend fun getInviterInfo(userId:String){
         firebaseRepository.getInviterInfo(userId).collect {
             _dataStateMyInvitationState.value = it
+        }
+    }
+
+    fun answerToInvite(answer:Int){
+        viewModelScope.launch {
+            if (answer == FirebaseProvider.INVITE_ANSWER_DECLINE) declineInvite()
+            firebaseRepository.answerToInvitation(answer).collect {
+
+            }
+        }
+    }
+
+    private suspend fun declineInvite(){
+        firebaseRepository.backToDefaultAfterDecline().collect {
+
         }
     }
 

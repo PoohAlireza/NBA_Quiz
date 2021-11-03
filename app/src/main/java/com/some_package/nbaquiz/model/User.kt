@@ -1,6 +1,10 @@
 package com.some_package.nbaquiz.model
 
-class User() {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class User() : Parcelable {
 
     constructor(username:String,avatar:Int?,team:Int?,lowerCaseUsername:String):this(){
         this.username=username

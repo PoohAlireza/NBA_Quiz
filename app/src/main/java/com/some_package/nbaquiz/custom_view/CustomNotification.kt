@@ -49,7 +49,7 @@ class CustomNotification(
         declineBTN.setOnClickListener(this)
     }
 
-    private fun show(listener: OnInviteAnswer){
+    fun show(listener: OnInviteAnswer){
         try {
 
             this.listener = listener

@@ -1,6 +1,7 @@
 package com.some_package.nbaquiz.ui.main
 
 import android.animation.Animator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -15,7 +16,12 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.some_package.nbaquiz.R
+import com.some_package.nbaquiz.custom_view.CustomNotification
+import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.interfaces.OnGameKindPageSelected
+import com.some_package.nbaquiz.interfaces.OnInviteAnswer
+import com.some_package.nbaquiz.ui.match.MatchActivity
+import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.Measure
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,13 +66,19 @@ class MainActivity : AppCompatActivity() , View.OnClickListener {
         setLineInMiddleOfBNV()
         observeUser()
         setupKindSelected()
-
+        observeInvitation()
 
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.initUserData()
+        viewModel.observeInvitation()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 
 
@@ -309,6 +321,30 @@ class MainActivity : AppCompatActivity() , View.OnClickListener {
         leftBNV_IC.setColorFilter(ContextCompat.getColor(this@MainActivity, R.color.white))
         rightBNV_IC.setColorFilter(ContextCompat.getColor(this@MainActivity, R.color.white))
         StaticHolder.fullScreen(this)
+    }
+
+    private fun observeInvitation(){
+        viewModel.dataStateMyInvitationState.observe(this, Observer {
+            if (it is DataState.Success){
+                val notification = CustomNotification(this,it.data!!.username!!,it.data.team!!,it.data.avatar!!)
+                notification.show(object : OnInviteAnswer {
+                    override fun onAccept() {
+                        viewModel.answerToInvite(FirebaseProvider.INVITE_ANSWER_ACCEPT)
+                        notification.dismiss()
+                        val intent  = Intent(this@MainActivity, MatchActivity::class.java)
+                        intent.putExtra("kind",StaticHolder.FRIENDLY_GUEST)
+                        intent.putExtra("user",it.data)
+                        startActivity(intent)
+                    }
+
+                    override fun onDecline() {
+                        viewModel.answerToInvite(FirebaseProvider.INVITE_ANSWER_DECLINE)
+                        notification.dismiss()
+                    }
+
+                })
+            }
+        })
     }
 
 }

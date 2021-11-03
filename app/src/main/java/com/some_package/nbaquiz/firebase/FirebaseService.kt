@@ -61,5 +61,6 @@ interface FirebaseService {
     suspend fun getInviterInfo(userId:String):Flow<DataState<User>>
     suspend fun answerToInvitation(answer:Int):Flow<DataState<String>>
     suspend fun observeRoomId():Flow<DataState<String>>
+    suspend fun joinToInvitationRoom(roomId: String):Flow<DataState<String>>
     suspend fun backToDefaultAfterDecline():Flow<DataState<String>>
 }
