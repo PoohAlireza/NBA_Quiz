@@ -139,7 +139,7 @@ class RankingFragment : Fragment(R.layout.fragment_ranking) {
         val observer = rank_3_RL.viewTreeObserver
         observer.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                rank_3_RL.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                observer.removeOnGlobalLayoutListener(this)
                 doAnim(card_1_CL, rank_1_RL)
                 doAnim(card_2_CL, rank_2_RL)
                 doAnim(card_3_CL, rank_3_RL)

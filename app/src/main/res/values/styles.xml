@@ -18,4 +18,12 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
+    <style name="DialogAnimationRev">
+        <item name="android:windowEnterAnimation">@anim/anim_invite_notif_down</item>
+        <item name="android:windowExitAnimation">@anim/anim_invite_notif_up</item>
+    </style>
+    <style name="DialogSlideAnimRev" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/DialogAnimationRev</item>
+    </style>
+
 </resources>

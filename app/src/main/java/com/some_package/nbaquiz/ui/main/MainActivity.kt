@@ -60,8 +60,13 @@ class MainActivity : AppCompatActivity() , View.OnClickListener {
         setLineInMiddleOfBNV()
         observeUser()
         setupKindSelected()
-        viewModel.initUserData()
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.initUserData()
     }
 
 

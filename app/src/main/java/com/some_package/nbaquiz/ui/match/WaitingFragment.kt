@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.some_package.nbaquiz.R
@@ -35,6 +35,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     private lateinit var progress: CustomLoading
     private lateinit var preparing: LinearLayout
     private lateinit var nextBtn:Button
+    private lateinit var warningTV:TextView
 
     ///
     private val questionsList:ArrayList<Question> = ArrayList()
@@ -43,24 +44,25 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
     private val rivalInfo = HashMap<String,Any?>()
     ///
 
-    private val viewModel:WaitingViewModel by activityViewModels()
+
+    private val viewModel:WaitingViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
-        observeMyInfo()
-        observeMyStatus()
+        observeDataStateMyInfo()
+        observeDataStateMyStatus()
         setImBusy()
 
-        observeJoin()
-        observeQuestionsStatus()
-        observeCreateRoom()
-        player2Founded()
-        observeRivalInfo()
-        observeStatingGameStatus()
-        setupCancelButton()
-        findRival()
-        setupStartMatchButton()
+//        observeJoin()
+//        observeQuestionsStatus()
+//        observeCreateRoom()
+//        player2Founded()
+//        observeRivalInfo()
+//        observeStatingGameStatus()
+//        setupCancelButton()
+//        findRival()
+//        setupStartMatchButton()
 
     }
 
@@ -74,12 +76,8 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         nextBtn = view.findViewById(R.id.btn_next_waiting_fragment)
         progress = view.findViewById(R.id.progress_waiting_fragment)
         preparing = view.findViewById(R.id.ll_preparing)
-
+        warningTV = view.findViewById(R.id.tv_warning_waiting_fragment)
         viewModel.initUserData()
-
-
-
-
     }
 
     private fun setupStartMatchButton(){
@@ -127,31 +125,56 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         viewModel.getRivalInfo(roomId,role)
     }
 
+    private fun runAsRandomly(){
+        observeDataStateJoin()
+        observeDataStateQuestionsStatus()
+        observeDataStateCreateRoom()
+        observeDataStatePlayer2Appearance()
+        observeDataStateRivalInfo()
+        observeDataStateStatingGameStatus()
+        findRival()
+        setupStartMatchButton()
+    }
+    private fun runAsHostFriendly(){
+        val rivalId = requireArguments().getString("user_id")
+        viewModel.sendInvite(rivalId!!)
+        observeDataStateInvitation()
+        observeDataStateInvitationAnswer()
+        observeDataStateInvitationRoom()
+    }
+    private fun runAsGuestFriendly(){
+        //await for room creation
+    }
 
-    private fun observeMyInfo(){
+
+    private fun observeDataStateMyInfo(){
         viewModel.userData.observe(viewLifecycleOwner, Observer {
             yourNameTV.text = it!!.username
             yourAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(), StaticHolder.avatars[it.avatar!!]))
         })
     }
-    private fun observeMyStatus(){
+    private fun observeDataStateMyStatus(){
         viewModel.dataStateMyStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
-                    Log.i(TAG, "observeMyStatus: set shod")
-                    // go ahead ::: run methods
+                    // TODO: 28/10/2021 probably we add a new state for guest cuz methods of guest is different relative to host --> FriendlyGuest , FriendlyHost
+                    when (requireActivity().intent.getIntExtra("kind", 0)){
+                        StaticHolder.RANDOMLY -> runAsRandomly()
+                        StaticHolder.FRIENDLY_HOST -> runAsHostFriendly()
+                        StaticHolder.FRIENDLY_GUEST -> runAsGuestFriendly()
+                    }
                 }
                 is DataState.Loading -> {
 
                 }
                 is DataState.Error -> {
-                    //back to find fragment you cant start a game
+                    //error
+                    requireActivity().finish()
                 }
             }
         })
     }
-    //here
-    private fun observeJoin(){
+    private fun observeDataStateJoin(){
         viewModel.dataStateJoiningRoom.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Loading -> {
@@ -174,10 +197,13 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     // create
                     createRoom()
                 }
+                is DataState.Warning ->{
+
+                }
             }
         })
     }
-    private fun observeQuestionsStatus(){
+    private fun observeDataStateQuestionsStatus(){
         viewModel.dataStateQuestions.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
@@ -188,7 +214,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
             }
         })
     }
-    private fun observeStatingGameStatus(){
+    private fun observeDataStateStatingGameStatus(){
         viewModel.dataStateStartingStatus.observe(viewLifecycleOwner, Observer {
             when (it){
                 is DataState.Success ->{
@@ -201,7 +227,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
             }
         })
     }
-    private fun observeCreateRoom(){
+    private fun observeDataStateCreateRoom(){
         viewModel.dataStateCreationRoom.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Loading -> {
@@ -222,8 +248,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
             }
         })
     }
-    //here
-    private fun player2Founded(){
+    private fun observeDataStatePlayer2Appearance(){
         viewModel.dataStateObservePlayer2.observe(viewLifecycleOwner, Observer {
             if (it is DataState.Success){
                 // get P2 details
@@ -232,8 +257,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
             }
         })
     }
-
-    private fun observeRivalInfo(){
+    private fun observeDataStateRivalInfo(){
         viewModel.dataStateRivalInfo.observe(viewLifecycleOwner, Observer {
             when(it){
                 is DataState.Success ->{
@@ -252,6 +276,75 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
 
                 }
                 is DataState.Loading ->{
+
+                }
+            }
+        })
+    }
+
+    private fun observeDataStateInvitation(){
+        viewModel.dataStateSendInvitation.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Warning -> {
+                    // TODO: 03/11/2021 back from this activity
+                    warningTV.text = it.warning
+                    progress.visibility = View.GONE
+                    warningTV.visibility = View.VISIBLE
+                }
+                is DataState.Success -> {
+                    viewModel.observeInvitationAnswer(requireArguments().getString("user_id")!!)
+                }
+                is DataState.Error -> {
+                    Log.i(TAG, "observeDataStateInvitation: $it")
+                }
+                is DataState.Loading -> {
+                    progress.visibility - View.VISIBLE
+                }
+            }
+        })
+    }
+    private fun observeDataStateInvitationAnswer(){
+        viewModel.dataStateInvitationAnswer.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Success -> {
+                    val answer = it.data
+                    if (answer == FirebaseProvider.INVITE_ANSWER_ACCEPT) {
+                        viewModel.createInvitationRoom()
+                    } else {
+                        // TODO: 03/11/2021 back from this activity
+                        warningTV.text = "Your request rejected"
+                        progress.visibility = View.GONE
+                        warningTV.visibility = View.VISIBLE
+                    }
+                }
+                is DataState.Error -> {
+                    Log.i(TAG, "observeDataStateInvitationAnswer: $it")
+                }
+                is DataState.Loading -> {
+
+                }
+                is DataState.Warning -> {
+
+                }
+            }
+        })
+    }
+    private fun observeDataStateInvitationRoom(){
+        viewModel.dataStateInvitationRoom.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Success ->{
+                    roomId = it.data!!
+                    myRole = FirebaseProvider.HOST
+                    viewModel.setRoomIdForInvitedPlayer(requireArguments().getString("user_id")!!,roomId)
+                    observeP2()
+                }
+                is DataState.Error -> {
+                    Log.i(TAG, "observeDataStateInvitationAnswer: $it")
+                }
+                is DataState.Loading -> {
+
+                }
+                is DataState.Warning -> {
 
                 }
             }

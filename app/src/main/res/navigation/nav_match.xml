@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_match"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_match"
     app:startDestination="@id/waitingFragment">
 
     <fragment
@@ -14,5 +16,14 @@
     <fragment
         android:id="@+id/matchFragment"
         android:name="com.some_package.nbaquiz.ui.match.MatchFragment"
-        android:label="MatchFragment" />
+        android:label="MatchFragment" >
+        <action
+            android:id="@+id/action_matchFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.some_package.nbaquiz.ui.match.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" />
 </navigation>

@@ -1,10 +1,9 @@
 package com.some_package.nbaquiz.repository
 
-import android.content.Context
 import android.util.Log
 import com.google.firebase.database.*
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.firebase.FirebaseService
@@ -12,22 +11,23 @@ import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.preferences.UserSharedPref
 import com.some_package.nbaquiz.util.DataState
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
-import java.lang.Exception
-import java.lang.StringBuilder
 import javax.inject.Inject
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 @ExperimentalCoroutinesApi
-class FirebaseRepository @Inject constructor(private val firebaseProvider: FirebaseProvider , private val userSharedPref: UserSharedPref) : FirebaseService {
+class FirebaseRepository @Inject constructor(
+    private val firebaseProvider: FirebaseProvider,
+    private val userSharedPref: UserSharedPref
+) : FirebaseService {
 
     private val TAG = "FirebaseRepository"
+
+    private val gameListeners = HashMap<DatabaseReference, ValueEventListener>()
+    private val roomPreparingListeners = HashMap<DatabaseReference, ValueEventListener>()
 
     override suspend fun registerUser(user: User): Flow<DataState<User>> = callbackFlow {
         offer(DataState.Loading)
@@ -37,9 +37,12 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             //add to realTime
             val hashMap: HashMap<String, Any?> = HashMap()
             hashMap["status"] = FirebaseProvider.EMPTY
-            hashMap["room-status"] = false
-            hashMap["username"] = user.username
-            firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(id).updateChildren(hashMap).addOnSuccessListener {
+            hashMap["accept"] = FirebaseProvider.INVITE_ANSWER_EMPTY
+            hashMap["rival-id"] = ""
+            hashMap["room-id"] = ""
+            firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(id).updateChildren(
+                hashMap
+            ).addOnSuccessListener {
                 Log.i(TAG, "registerUser: realtime register")
                 user.id = id
                 userSharedPref.setUserPref(user = user)
@@ -60,7 +63,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     override suspend fun checkUsername(username: String): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
-        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).whereEqualTo("lowerCaseUsername",username.toLowerCase()).get().addOnSuccessListener {
+        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).whereEqualTo(
+            "lowerCaseUsername",
+            username.toLowerCase()
+        ).get().addOnSuccessListener {
             Log.i(TAG, "checkUsername: Umad hoooo yaaahhh")
             if (it.isEmpty){
                 offer(DataState.Success(username))
@@ -79,7 +85,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     override suspend fun getRanks(): Flow<DataState<List<User>>> = callbackFlow {
         offer(DataState.Loading)
-        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).orderBy("points",Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener {
+        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).orderBy(
+            "points",
+            Query.Direction.DESCENDING
+        ).limit(10).get().addOnSuccessListener {
             Log.i(TAG, "getRanks: Rank Umad")
             val users:ArrayList<User> = ArrayList()
             if (!it.isEmpty){
@@ -99,14 +108,16 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     }
 
-    override suspend fun editProfile(avatar:Int? , team:Int?): Flow<DataState<String>> = callbackFlow {
+    override suspend fun editProfile(avatar: Int?, team: Int?): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
 
         if (avatar !=null && team !=null){
-            firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
-                .update("avatar",avatar,"team",team).addOnSuccessListener {
+            firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document(
+                userSharedPref.getUserPref().id!!
+            )
+                .update("avatar", avatar, "team", team).addOnSuccessListener {
 
-                    userSharedPref.updateUserPref(avatar = avatar ,team = team)
+                    userSharedPref.updateUserPref(avatar = avatar, team = team)
                     offer(DataState.Success("updated"))
 
                 }.addOnFailureListener {
@@ -116,9 +127,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
         else if (avatar !=null && team == null){
             firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
-                .update("avatar",avatar).addOnSuccessListener {
+                .update("avatar", avatar).addOnSuccessListener {
 
-                    userSharedPref.updateUserPref(avatar = avatar ,team = null)
+                    userSharedPref.updateUserPref(avatar = avatar, team = null)
                     offer(DataState.Success("updated"))
 
                 }.addOnFailureListener {
@@ -128,9 +139,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
         else if (avatar ==null && team != null){
             firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document("${userSharedPref.getUserPref().id}")
-                .update("team",team).addOnSuccessListener {
+                .update("team", team).addOnSuccessListener {
 
-                    userSharedPref.updateUserPref(avatar = null ,team = team)
+                    userSharedPref.updateUserPref(avatar = null, team = team)
                     offer(DataState.Success("updated"))
 
                 }.addOnFailureListener {
@@ -145,7 +156,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     override suspend fun searchUser(username: String): Flow<DataState<List<User>>> = callbackFlow {
         offer(DataState.Loading)
-        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).whereGreaterThanOrEqualTo("lowerCaseUsername",username).get().addOnSuccessListener {
+        firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).whereGreaterThanOrEqualTo(
+            "lowerCaseUsername",
+            username
+        ).get().addOnSuccessListener {
             val userList:ArrayList<User> = ArrayList()
             for (ds in it.documents){
                 userList.add(ds.toObject(User::class.java)!!)
@@ -165,7 +179,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         offer(DataState.Loading)
         val questionList:ArrayList<Question> = ArrayList()
         // todo we must get randomly
-        firebaseProvider.fireStore.collection(FirebaseProvider.QUESTIONS_COLLECTION_KEY).limit(12).orderBy("id",Query.Direction.ASCENDING).get().addOnSuccessListener {
+        firebaseProvider.fireStore.collection(FirebaseProvider.QUESTIONS_COLLECTION_KEY).limit(12).orderBy(
+            "id",
+            Query.Direction.ASCENDING
+        ).get().addOnSuccessListener {
 
             for (ds in it.documents){
                 questionList.add(ds.toObject(Question::class.java)!!)
@@ -186,13 +203,15 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     override suspend fun addQuestionsToRooms(collectionId: String, questionsList: List<Question>): Flow<DataState<String>> = callbackFlow {
         // todo use batch of write !!!
         offer(DataState.Loading)
-        val mRoom = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(FirebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
+        val mRoom = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(
+            FirebaseProvider.ROOMS_COLLECTION_KEY
+        ).collection(collectionId)
         // add from 0 to n-1
         for(i in 0 until questionsList.size-1){
             mRoom.add(questionsList[i])
         }
         // add n
-        mRoom.add(questionsList[questionsList.size-1]).addOnSuccessListener {
+        mRoom.add(questionsList[questionsList.size - 1]).addOnSuccessListener {
             offer(DataState.Success("all questions added"))
             Log.i(TAG, "addQuestionsToRooms: added")
         }.addOnFailureListener {
@@ -207,9 +226,11 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     override suspend fun getQuestionsFromRooms(collectionId: String): Flow<DataState<List<Question>>> = callbackFlow {
         offer(DataState.Loading)
-        val mRoom:CollectionReference = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(FirebaseProvider.ROOMS_COLLECTION_KEY).collection(collectionId)
+        val mRoom:CollectionReference = firebaseProvider.fireStore.collection(FirebaseProvider.ROOMS_COLLECTION_KEY).document(
+            FirebaseProvider.ROOMS_COLLECTION_KEY
+        ).collection(collectionId)
         val questionsList:ArrayList<Question> = ArrayList()
-        mRoom.orderBy("id",Query.Direction.ASCENDING).get().addOnSuccessListener {
+        mRoom.orderBy("id", Query.Direction.ASCENDING).get().addOnSuccessListener {
 
             for (ds in it.documents){
                 questionsList.add(ds.toObject(Question::class.java)!!)
@@ -254,7 +275,8 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                     }
 
                     if (roomId != null){
-                        roomsRef.child(roomId).child("P2-username").ref.runTransaction(object : Transaction.Handler {
+                        roomsRef.child(roomId).child("P2-username").ref.runTransaction(object :
+                            Transaction.Handler {
                             override fun doTransaction(currentData: MutableData): Transaction.Result {
 
                                 currentData.value = userSharedPref.getUserPref().username
@@ -262,14 +284,26 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                                 return Transaction.success(currentData)
                             }
 
-                            override fun onComplete(error: DatabaseError?, committed: Boolean, currentData: DataSnapshot?) {
+                            override fun onComplete(
+                                error: DatabaseError?,
+                                committed: Boolean,
+                                currentData: DataSnapshot?
+                            ) {
                                 Log.i(TAG, "onComplete: $error")
-                                if (committed && currentData != null && currentData.getValue(String::class.java)!!.equals(userSharedPref.getUserPref().username)){
-                                    roomsRef.child(roomId).child("P2-avatar").ref.setValue(userSharedPref.getUserPref().avatar)
-                                    roomsRef.child(roomId).child("P2-team").ref.setValue(userSharedPref.getUserPref().team).addOnSuccessListener {
+                                if (committed && currentData != null && currentData.getValue(String::class.java)!!
+                                        .equals(
+                                            userSharedPref.getUserPref().username
+                                        )
+                                ) {
+                                    roomsRef.child(roomId).child("P2-avatar").ref.setValue(
+                                        userSharedPref.getUserPref().avatar
+                                    )
+                                    roomsRef.child(roomId).child("P2-team").ref.setValue(
+                                        userSharedPref.getUserPref().team
+                                    ).addOnSuccessListener {
                                         offer(DataState.Success(roomId))
                                     }
-                                }else{
+                                } else {
                                     offer(DataState.Error(Exception("not_founded")))
                                 }
                             }
@@ -282,7 +316,7 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                     offer(DataState.Error(Exception("not_founded")))
                     Log.i(TAG, "joinRoom: error not found")
                 }
-            }catch (e:Exception){
+            }catch (e: Exception){
                 offer(DataState.Error(e))
                 Log.i(TAG, "joinRoom: error exception")
             }
@@ -299,8 +333,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     override suspend fun createRoom(): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
         val roomId = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).push().key
-        val roomRef = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId!!).ref
-        val children:HashMap<String,Any?> = HashMap()
+        val roomRef = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId!!
+        ).ref
+        val children:HashMap<String, Any?> = HashMap()
         children["start"] = false
         children["questions-ready"] = false
         children["P1-username"] = userSharedPref.getUserPref().username
@@ -314,8 +350,12 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         children["P1-time"] = 0
         children["P2-time"] = 0
         children["quarter"] = 0
-        children["P1-answer"] = FirebaseProvider.ANSWER_EMPTY
-        children["P2-answer"] = FirebaseProvider.ANSWER_EMPTY
+        children["P1-answer1"] = FirebaseProvider.ANSWER_EMPTY
+        children["P1-answer2"] = FirebaseProvider.ANSWER_EMPTY
+        children["P1-answer3"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer1"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer2"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer3"] = FirebaseProvider.ANSWER_EMPTY
         roomRef.updateChildren(children).addOnSuccessListener {
             offer(DataState.Success(roomId))
             Log.i(TAG, "createRoom: success")
@@ -330,8 +370,12 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
 
     }
     //P2
-    override suspend fun observeQuestionsAddingStatus(roomId:String): Flow<Boolean> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("questions-ready").addValueEventListener(
+    //*
+    override suspend fun observeQuestionsAddingStatus(roomId: String): Flow<Boolean> = callbackFlow {
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId
+        ).child("questions-ready")
+        val listener = ref.addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists() && snapshot.getValue(Boolean::class.java)!!) {
@@ -347,6 +391,7 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                 }
 
             })
+        roomPreparingListeners[ref] = listener
         awaitClose {
             cancel()
         }
@@ -354,7 +399,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     //P2
     override suspend fun changeStartingGameStatus(roomId: String): Flow<DataState<Boolean>> = callbackFlow {
 
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("start").setValue(true).addOnSuccessListener {
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child(
+            "start"
+        ).setValue(true).addOnSuccessListener {
             offer(DataState.Success(true))
             Log.i(TAG, "changeStartingGameStatus: success")
         }.addOnFailureListener {
@@ -367,11 +414,15 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         }
     }
     //P1
+    //*
     override suspend fun observeStartingGameStatus(roomId: String): Flow<DataState<Boolean>> = callbackFlow {
 
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("start").addValueEventListener(object : ValueEventListener{
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId
+        ).child("start")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists() && snapshot.getValue(Boolean::class.java)!!){
+                if (snapshot.exists() && snapshot.getValue(Boolean::class.java)!!) {
                     //start game
                     offer(DataState.Success(true))
                     Log.i(TAG, "observeStartingGameStatus: success")
@@ -384,7 +435,7 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             }
 
         })
-
+        roomPreparingListeners[ref] = listener
         awaitClose{
             cancel()
         }
@@ -393,7 +444,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     override suspend fun setImBusy(): Flow<DataState<Int>> = callbackFlow {
         offer(DataState.Loading)
 
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("status").setValue(FirebaseProvider.BUSY).addOnSuccessListener {
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child(
+            "status"
+        ).setValue(FirebaseProvider.BUSY).addOnSuccessListener {
             offer(DataState.Success(FirebaseProvider.BUSY))
             Log.i(TAG, "setImBusy: set")
         }.addOnFailureListener {
@@ -406,11 +459,15 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         }
     }
     //P1
-    override suspend fun observeP2(roomId:String): Flow<DataState<String>> = callbackFlow {
+    //*
+    override suspend fun observeP2(roomId: String): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("P2-team").addValueEventListener(object :ValueEventListener{
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId
+        ).child("P2-team")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists() && snapshot.getValue(Int::class.java) != -1){
+                if (snapshot.exists() && snapshot.getValue(Int::class.java) != -1) {
                     // or get username and offer
                     offer(DataState.Success("Founded"))
                     Log.i(TAG, "observeP2: success")
@@ -423,7 +480,7 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             }
 
         })
-
+        roomPreparingListeners[ref] = listener
         awaitClose {
             cancel()
         }
@@ -431,7 +488,9 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     //P1
     override suspend fun setQuestionsPreparingStatus(roomId: String): Flow<DataState<Boolean>> = callbackFlow {
         offer(DataState.Loading)
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("questions-ready").setValue(true).addOnSuccessListener {
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child(
+            "questions-ready"
+        ).setValue(true).addOnSuccessListener {
             offer(DataState.Success(true))
             Log.i(TAG, "setQuestionsPreparingStatus: set")
         }.addOnFailureListener {
@@ -443,14 +502,16 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         awaitClose { cancel() }
     }
     //P1 & P2
-    override suspend fun getPlayerInfo(roomId: String, playerRole: String): Flow<DataState<Map<String,Any?>>> = callbackFlow {
+    override suspend fun getPlayerInfo(roomId: String, playerRole: String): Flow<DataState<Map<String, Any?>>> = callbackFlow {
         offer(DataState.Loading)
         val username = "$playerRole-username"
         val avatar = "$playerRole-avatar"
         val team = "$playerRole-team"
-        val roomRef = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId)
-        val map = HashMap<String,Any?>()
-        roomRef.child(username).get().addOnSuccessListener {mUsername ->
+        val roomRef = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId
+        )
+        val map = HashMap<String, Any?>()
+        roomRef.child(username).get().addOnSuccessListener { mUsername ->
             map["username"] = mUsername.getValue(String::class.java)
             Log.i(TAG, "getPlayerInfo: username set")
 
@@ -490,19 +551,31 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
     override suspend fun addPoint(roomId: String, point: Int, playerRole: String): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
         val goal = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-point")
-        goal.get().addOnSuccessListener {
-            goal.setValue(it.getValue(Int::class.java)!!+point)
-            offer(DataState.Success("point added"))
-        }.addOnFailureListener {
-            offer(DataState.Error(it))
-        }
+        goal.runTransaction(object : Transaction.Handler{
+            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                val currentPoint = currentData.getValue(Int::class.java)?: return Transaction.success(currentData)
+                currentData.value = currentPoint+point
+                return Transaction.success(currentData)
+            }
+
+            override fun onComplete(error: DatabaseError?, committed: Boolean, currentData: DataSnapshot?) {
+                if (committed){
+                    offer(DataState.Success("point added"))
+                }else{
+                    offer(DataState.Error(error!!.toException()))
+                }
+            }
+
+        })
+
         awaitClose {
             cancel()
         }
     }
-
+    //*
     override suspend fun observePoint(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-point").addValueEventListener(object : ValueEventListener{
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-point")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 offer(DataState.Success(snapshot.getValue(Int::class.java)))
             }
@@ -510,19 +583,21 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             override fun onCancelled(error: DatabaseError) {
                 offer(DataState.Error(error.toException()))
             }
-
         })
+        gameListeners[ref] = listener
         awaitClose {
             cancel()
         }
     }
 
-    override suspend fun setAnswerState(roomId: String, answer: Int, playerRole: String): Flow<DataState<String>> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer").setValue(answer).addOnSuccessListener {
-            firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer").setValue(FirebaseProvider.EMPTY).addOnFailureListener {
-                Log.i(TAG, "setAnswerState: EMPTY NOT SET ")
+    override suspend fun setAnswerState(roomId: String, answer: Int, playerRole: String , state:Int): Flow<DataState<String>> = callbackFlow {
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer$state")
+            ref.setValue(FirebaseProvider.ANSWER_EMPTY).addOnSuccessListener {
+            ref.setValue(answer).addOnSuccessListener {
+                offer(DataState.Success("answer is written"))
+            }.addOnFailureListener {
+                offer(DataState.Error(it))
             }
-            offer(DataState.Success("answer is written"))
         }.addOnFailureListener {
             offer(DataState.Error(it))
         }
@@ -530,9 +605,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             cancel()
         }
     }
-
-    override suspend fun observeAnswerState(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer").addValueEventListener(object : ValueEventListener{
+    //*
+    override suspend fun observeAnswerState1(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer1")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 offer(DataState.Success(snapshot.getValue(Int::class.java)))
             }
@@ -540,15 +616,51 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             override fun onCancelled(error: DatabaseError) {
                 offer(DataState.Error(error.toException()))
             }
-
         })
+        gameListeners[ref] = listener
+        awaitClose {
+            cancel()
+        }
+    }
+    //*
+    override suspend fun observeAnswerState2(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer2")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                offer(DataState.Success(snapshot.getValue(Int::class.java)))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                offer(DataState.Error(error.toException()))
+            }
+        })
+        gameListeners[ref] = listener
+        awaitClose {
+            cancel()
+        }
+    }
+    //*
+    override suspend fun observeAnswerState3(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-answer3")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                offer(DataState.Success(snapshot.getValue(Int::class.java)))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                offer(DataState.Error(error.toException()))
+            }
+        })
+        gameListeners[ref] = listener
         awaitClose {
             cancel()
         }
     }
 
     override suspend fun setQuarterNumber(roomId: String): Flow<DataState<String>> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("quarter").runTransaction(
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child(
+            "quarter"
+        ).runTransaction(
             object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                     var quarter =
@@ -574,9 +686,10 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
             cancel()
         }
     }
-
+    //*
     override suspend fun observeQuarterNumber(roomId: String): Flow<DataState<Int>> = callbackFlow {
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("quarter").addValueEventListener(object : ValueEventListener{
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("quarter")
+        val listener = ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 offer(DataState.Success(snapshot.getValue(Int::class.java)))
             }
@@ -585,15 +698,18 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
                 offer(DataState.Error(error.toException()))
             }
         })
+        gameListeners[ref] = listener
         awaitClose {
             cancel()
         }
     }
 
     override suspend fun addTime(roomId: String, time: Int, playerRole: String): Flow<DataState<String>> = callbackFlow {
-        val goal = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child("$playerRole-time")
+        val goal = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(
+            roomId
+        ).child("$playerRole-time")
         goal.get().addOnSuccessListener {
-            goal.setValue(it.getValue(Int::class.java)).addOnSuccessListener {
+            goal.setValue(it.getValue(Int::class.java)!! + time).addOnSuccessListener {
                 offer(DataState.Success("time added"))
             }.addOnFailureListener { errorAdd ->
                 offer(DataState.Error(errorAdd))
@@ -601,6 +717,318 @@ class FirebaseRepository @Inject constructor(private val firebaseProvider: Fireb
         }.addOnFailureListener { errorGet ->
             offer(DataState.Error(errorGet))
         }
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun getTime(roomId: String, playerRole: String): Flow<DataState<Int>> = callbackFlow {
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).child(
+            "$playerRole-time"
+        ).get().addOnSuccessListener {
+            offer(DataState.Success(it.getValue(Int::class.java)))
+        }.addOnFailureListener {
+            Log.i(TAG, "getPoint: $it")
+            offer(DataState.Error(it))
+        }
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun incrementGame(): Flow<DataState<Int>> = callbackFlow {
+        offer(DataState.Loading)
+        val mDoc = firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document(
+            userSharedPref.getUserPref().id!!
+        )
+        mDoc.update("games", FieldValue.increment(1)).addOnSuccessListener {
+            val newGamesCount = userSharedPref.incrementGame()
+            offer(DataState.Success(newGamesCount))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun addPointsToUser(points: Int): Flow<DataState<Int>> = callbackFlow {
+        offer(DataState.Loading)
+        val mDoc = firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document(
+            userSharedPref.getUserPref().id!!
+        )
+        mDoc.update("points", FieldValue.increment(points.toLong())).addOnSuccessListener {
+            val newPointsCount = userSharedPref.incrementPoint(points)
+            offer(DataState.Success(newPointsCount))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun incrementWin(): Flow<DataState<Int>> = callbackFlow {
+        offer(DataState.Loading)
+        val mDoc = firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document(
+            userSharedPref.getUserPref().id!!
+        )
+        mDoc.update("wins", FieldValue.increment(1)).addOnSuccessListener {
+            val newWinsCount = userSharedPref.incrementWin()
+            offer(DataState.Success(newWinsCount))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override suspend fun deleteRoomAfterMatch(roomId: String): Flow<DataState<String>> = callbackFlow {
+        offer(DataState.Loading)
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId).removeValue().addOnSuccessListener {
+            offer(DataState.Success("removed successfully"))
+
+        }.addOnFailureListener { error ->
+            offer(DataState.Error(error))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    // TODO: 28/10/2021 call where?
+    override suspend fun setImEmpty(): Flow<DataState<Int>> = callbackFlow {
+
+        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child(
+            "status"
+        )
+            .setValue(FirebaseProvider.EMPTY).addOnSuccessListener {
+                offer(DataState.Success(FirebaseProvider.EMPTY))
+            }.addOnFailureListener {
+                offer(DataState.Error(it))
+            }
+
+        awaitClose {
+            cancel()
+        }
+    }
+
+    override fun detachRoomPreparingListeners() {
+        for (ref in roomPreparingListeners.keys){
+            ref.removeEventListener(roomPreparingListeners[ref]!!)
+        }
+    }
+
+    override fun detachGameListeners() {
+        for (ref in gameListeners.keys){
+            ref.removeEventListener(gameListeners[ref]!!)
+        }
+    }
+
+    //invite
+
+    //P1
+    override suspend fun sendInvitation(rivalId: String): Flow<DataState<String>> = callbackFlow {
+        offer(DataState.Loading)
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(rivalId)
+        ref.child("status").get().addOnSuccessListener {
+            if (it.exists()){
+                val status = it.getValue(Int::class.java)
+                if (status == FirebaseProvider.EMPTY){
+                    ref.child("status").setValue(FirebaseProvider.BUSY).addOnSuccessListener {
+                        ref.child("rival-id").setValue(userSharedPref.getUserPref().id).addOnSuccessListener {
+                            offer(DataState.Success("success"))
+                        }.addOnFailureListener { errorSetId ->
+                            offer(DataState.Error(errorSetId))
+                        }
+                    }.addOnFailureListener { errorSetStatus ->
+                        offer(DataState.Error(errorSetStatus))
+                    }
+                }else {
+                    offer(DataState.Warning("The person you invited is currently in another match"))
+                }
+            }
+        }.addOnFailureListener{
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P2 //**
+    override suspend fun observeInvitation(): Flow<DataState<String>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("rival-id")
+        val listener = ref.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists() && snapshot.getValue(String::class.java)!!.isNotEmpty()){
+                    offer(DataState.Success(snapshot.getValue(String::class.java)))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P2
+    override suspend fun getInviterInfo(userId:String): Flow<DataState<User>> = callbackFlow {
+        offer(DataState.Loading)
+        val ref = firebaseProvider.fireStore.collection(FirebaseProvider.USERS_COLLECTION_KEY).document(userId)
+        ref.get().addOnSuccessListener {
+            if (it.exists()){
+                offer(DataState.Success(it.toObject(User::class.java)))
+            }
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose{
+            cancel()
+        }
+    }
+    //P2
+    override suspend fun answerToInvitation(answer: Int): Flow<DataState<String>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!)
+        ref.child("accept").setValue(FirebaseProvider.INVITE_ANSWER_EMPTY).addOnSuccessListener {
+            ref.child("accept").setValue(answer).addOnSuccessListener {
+                offer(DataState.Success("success"))
+            }.addOnFailureListener { errorSetAnswer ->
+                offer(DataState.Error(errorSetAnswer))
+            }
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose{
+            cancel()
+        }
+    }
+    //P1 //**
+    override suspend fun observeInvitationAnswer(userId: String): Flow<DataState<Int>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userId).child("accept")
+        val listener = ref.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    val answer = snapshot.getValue(Int::class.java)
+                    if (answer!=null && (answer == FirebaseProvider.INVITE_ANSWER_ACCEPT || answer == FirebaseProvider.INVITE_ANSWER_DECLINE)){
+                        offer(DataState.Success(answer))
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P1
+    override suspend fun createInvitationRoom(): Flow<DataState<String>> = callbackFlow {
+
+        offer(DataState.Loading)
+        val roomId = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).push().key
+        val roomRef = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_ROOMS).child(roomId!!).ref
+        val children:HashMap<String, Any?> = HashMap()
+        children["start"] = false
+        children["questions-ready"] = false
+        children["P1-username"] = userSharedPref.getUserPref().username
+        children["P2-username"] = "waiting"
+        children["P1-avatar"] = userSharedPref.getUserPref().avatar
+        children["P2-avatar"] = -1
+        children["P1-team"] = userSharedPref.getUserPref().team
+        children["P2-team"] = -1
+        children["P1-point"] = 0
+        children["P2-point"] = 0
+        children["P1-time"] = 0
+        children["P2-time"] = 0
+        children["quarter"] = 0
+        children["P1-answer1"] = FirebaseProvider.ANSWER_EMPTY
+        children["P1-answer2"] = FirebaseProvider.ANSWER_EMPTY
+        children["P1-answer3"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer1"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer2"] = FirebaseProvider.ANSWER_EMPTY
+        children["P2-answer3"] = FirebaseProvider.ANSWER_EMPTY
+        roomRef.updateChildren(children).addOnSuccessListener {
+            offer(DataState.Success(roomId))
+            Log.i(TAG, "createRoom: success")
+        }.addOnFailureListener {
+            Log.i(TAG, "createRoom: error")
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P1
+    override suspend fun setRoomId(roomId: String, userId: String): Flow<DataState<String>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userId).child("room-id")
+        ref.setValue(roomId).addOnSuccessListener {
+            offer(DataState.Success("roomId set"))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P2 //**
+    override suspend fun observeRoomId(): Flow<DataState<String>> = callbackFlow {
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("room-id")
+        val listener = ref.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+               if (snapshot.exists()){
+                   val result = snapshot.getValue(String::class.java)
+                   if (result != null && result.isNotEmpty()){
+                       offer(DataState.Success(result))
+                   }
+               }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+        awaitClose {
+            cancel()
+        }
+    }
+    //P2 //?
+    override suspend fun backToDefaultAfterDecline(): Flow<DataState<String>> = callbackFlow {
+
+        setImEmpty()
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("rival-id")
+        ref.setValue("").addOnSuccessListener {
+            offer(DataState.Success("success"))
+        }.addOnFailureListener {
+            offer(DataState.Error(it))
+        }
+
         awaitClose {
             cancel()
         }

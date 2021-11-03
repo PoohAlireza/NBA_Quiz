@@ -36,9 +36,30 @@ interface FirebaseService {
     //match
     suspend fun addPoint(roomId:String , point:Int ,playerRole:String):Flow<DataState<String>>
     suspend fun observePoint(roomId:String ,playerRole:String):Flow<DataState<Int>>
-    suspend fun setAnswerState(roomId:String , answer:Int ,playerRole:String):Flow<DataState<String>>
-    suspend fun observeAnswerState(roomId:String ,playerRole:String):Flow<DataState<Int>>
+    suspend fun setAnswerState(roomId:String , answer:Int ,playerRole:String ,state:Int):Flow<DataState<String>>
+    suspend fun observeAnswerState1(roomId:String ,playerRole:String):Flow<DataState<Int>>
+    suspend fun observeAnswerState2(roomId:String ,playerRole:String):Flow<DataState<Int>>
+    suspend fun observeAnswerState3(roomId:String ,playerRole:String):Flow<DataState<Int>>
     suspend fun setQuarterNumber(roomId:String):Flow<DataState<String>>
     suspend fun observeQuarterNumber(roomId:String):Flow<DataState<Int>>
     suspend fun addTime(roomId:String , time:Int ,playerRole:String):Flow<DataState<String>>
+    suspend fun getTime(roomId: String , playerRole: String):Flow<DataState<Int>>
+    suspend fun incrementGame():Flow<DataState<Int>>
+    suspend fun addPointsToUser(points:Int):Flow<DataState<Int>>
+    suspend fun incrementWin():Flow<DataState<Int>>
+    suspend fun deleteRoomAfterMatch(roomId: String):Flow<DataState<String>>
+    suspend fun setImEmpty():Flow<DataState<Int>>
+    fun detachRoomPreparingListeners()
+    fun detachGameListeners()
+    //invite
+    suspend fun sendInvitation(rivalId:String):Flow<DataState<String>>
+    suspend fun observeInvitationAnswer(userId:String):Flow<DataState<Int>>
+    suspend fun createInvitationRoom():Flow<DataState<String>>
+    suspend fun setRoomId(roomId: String , userId:String):Flow<DataState<String>>
+
+    suspend fun observeInvitation():Flow<DataState<String>>
+    suspend fun getInviterInfo(userId:String):Flow<DataState<User>>
+    suspend fun answerToInvitation(answer:Int):Flow<DataState<String>>
+    suspend fun observeRoomId():Flow<DataState<String>>
+    suspend fun backToDefaultAfterDecline():Flow<DataState<String>>
 }

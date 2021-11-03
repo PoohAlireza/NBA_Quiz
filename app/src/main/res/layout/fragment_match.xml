@@ -621,5 +621,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/btn_next_match_fragment"
+        android:background="@color/trans"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

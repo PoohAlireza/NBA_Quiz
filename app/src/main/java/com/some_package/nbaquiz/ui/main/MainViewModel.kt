@@ -1,7 +1,6 @@
 package com.some_package.nbaquiz.ui.main
 
 import androidx.lifecycle.*
-import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.repository.FirebaseRepository
 import com.some_package.nbaquiz.repository.LocalRepository
@@ -32,6 +31,10 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     private val _dataStateSearchedUser:MutableLiveData<DataState<List<User>>> = MutableLiveData()
     val dataStateSearchedUser:LiveData<DataState<List<User>>>
         get() = _dataStateSearchedUser
+
+    private val _dataStateMyInvitationState:MutableLiveData<DataState<User>> = MutableLiveData()
+    val dataStateMyInvitationState:LiveData<DataState<User>>
+        get() = _dataStateMyInvitationState
 
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
@@ -67,7 +70,21 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
         }
     }
 
+    fun observeInvitation(){
+        viewModelScope.launch {
+            firebaseRepository.observeInvitation().collect {
+                if (it is DataState.Success){
+                    getInviterInfo(it.data!!)
+                }
+            }
+        }
+    }
 
+    private suspend fun getInviterInfo(userId:String){
+        firebaseRepository.getInviterInfo(userId).collect {
+            _dataStateMyInvitationState.value = it
+        }
+    }
 
 
 }

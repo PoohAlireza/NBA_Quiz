@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.some_package.nbaquiz.R
 import com.some_package.nbaquiz.custom_view.CustomRestDialog
 import com.some_package.nbaquiz.firebase.FirebaseProvider
@@ -25,7 +26,12 @@ import com.some_package.nbaquiz.model.Question
 import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_match.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -82,17 +88,30 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
     private lateinit var timerTask:MyTimer
     private lateinit var restDialog: CustomRestDialog
     private var clickAllowed:Boolean = true
+    private val times = ArrayList<Int>()
+    private var isFirstTimeToGetTime = true
+//    private var finishTimeAllowed = true
 
     private val viewModel:MatchViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.incrementGame()
         init(view)
         firstSetup()
         callAllObserve()
         setTimerAnim()
         startTimer()
         setupNext()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.observeQuarter(roomId)
+        viewModel.observePoint(roomId,rivalRole)
+        viewModel.observeAnswer1(roomId,rivalRole)
+        viewModel.observeAnswer2(roomId,rivalRole)
+        viewModel.observeAnswer3(roomId,rivalRole)
     }
 
     private fun init(view: View){
@@ -177,6 +196,7 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
         setupQuarter(yourQuestionNumber)
         setQuestionKind(yourQuestionNumber)
         setQuestionNumber(yourQuestionNumber)
+        clickAllowed = true
     }
     private fun setQuestionKind(number: Int){
         questionKindTV.text = when (number){
@@ -305,12 +325,14 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
 
     ///// observe
     private fun callAllObserve(){
-        observeMyInfo()
-        observeAnswer()
-        observeQuarter()
-        observeRivalPoint()
+        observeDataStateMyInfo()
+        observeDataStateAnswer()
+        observeDataStateQuarter()
+        observeDataStateRivalPoint()
+        observeDataStateTimes()
+        observeDataStateTimeSetting()
     }
-    private fun observeMyInfo(){
+    private fun observeDataStateMyInfo(){
         viewModel.userData.observe(viewLifecycleOwner, Observer {
             yourUsernameTV.text = it.username
             yourTeamIV.setImageDrawable(
@@ -327,7 +349,7 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
             )
         })
     }
-    private fun observeQuarter(){
+    private fun observeDataStateQuarter(){
         viewModel.dataStateQuarter.observe(viewLifecycleOwner, Observer {
             if (it is DataState.Success) {
                 when (it.data) {
@@ -338,69 +360,93 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
                             startTimer()
                             clickAllowed = true
                             resetAnswersState()
+                            if (it.data == 2) rivalQuestionNumber = QUARTER_2
+                            if (it.data == 4) rivalQuestionNumber = QUARTER_3
+                            if (it.data == 6) rivalQuestionNumber = QUARTER_4
                         }
                     }
                     //game ended
                     8 -> {
-                        if (restDialog.isShowing){
-                            restDialog.dismiss()
-                            // go to another frag or show new dialog
-                            endGame()
-                        }
+                        rivalQuestionNumber = END_GAME
+                        viewModel.getTime(roomId,myRole)
                     }
                 }
-            }
-        })
-        viewModel.observeQuarter(roomId)
-    }
-    private fun observeRivalPoint(){
-        viewModel.dataStatePoint.observe(viewLifecycleOwner, Observer {
-            if (it is DataState.Success) {
-                rivalPointsTV.text = "${it.data!!}"
             }
         })
 
-        viewModel.observePoint(roomId,rivalRole)
     }
-    private fun observeAnswer(){
-        viewModel.dataStateAnswer.observe(viewLifecycleOwner, Observer {
+    private fun observeDataStateRivalPoint(){
+        viewModel.dataStatePoint.observe(viewLifecycleOwner, Observer {
             if (it is DataState.Success) {
-                val answerIV:ImageView? = when(rivalQuestionNumber%3){
-                    0 ->{
-                        rivalFirstAnswerStateIV
-                    }
-                    1 ->{
-                        rivalSecondAnswerStateIV
-                    }
-                    2 ->{
-                        rivalThirdAnswerStateIV
-                    }
-                    else -> null
-                }
-                when (it.data) {
+                rivalPointsTV.text = "${it.data}"
+            }
+        })
+    }
+    private fun observeDataStateAnswer(){
+        viewModel.dataStateAnswer1.observe(viewLifecycleOwner, Observer {
+            if (it is DataState.Success){
+                when(it.data){
                     FirebaseProvider.ANSWER_CORRECT -> {
-                        answerIV!!.setColorFilter(ResourcesCompat.getColor(resources,R.color.green,null))
+                        rivalFirstAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.green,null))
                         rivalQuestionNumber++
                     }
                     FirebaseProvider.ANSWER_WRONG -> {
-                        answerIV!!.setColorFilter(ResourcesCompat.getColor(resources,R.color.red,null))
+                        rivalFirstAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.red,null))
                         rivalQuestionNumber++
-                    }
-                    FirebaseProvider.ANSWER_EMPTY -> {
-                        // nothing
-                    }
-                    FirebaseProvider.ANSWER_NO_TIME -> {
-                        when(rivalQuestionNumber){
-                            0,1,2 -> rivalQuestionNumber = QUARTER_2
-                            3,4,5 -> rivalQuestionNumber = QUARTER_3
-                            6,7,8 -> rivalQuestionNumber = QUARTER_4
-                            9,10,11 -> rivalQuestionNumber = END_GAME
-                        }
                     }
                 }
             }
         })
-        viewModel.observeAnswer(roomId,rivalRole)
+        viewModel.dataStateAnswer2.observe(viewLifecycleOwner, Observer {
+            if (it is DataState.Success){
+                when(it.data){
+                    FirebaseProvider.ANSWER_CORRECT -> {
+                        rivalSecondAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.green,null))
+                        rivalQuestionNumber++
+                    }
+                    FirebaseProvider.ANSWER_WRONG -> {
+                        rivalSecondAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.red,null))
+                        rivalQuestionNumber++
+                    }
+                }
+            }
+        })
+        viewModel.dataStateAnswer3.observe(viewLifecycleOwner, Observer {
+            if (it is DataState.Success){
+                when(it.data){
+                    FirebaseProvider.ANSWER_CORRECT -> {
+                        rivalThirdAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.green,null))
+                        rivalQuestionNumber++
+                    }
+                    FirebaseProvider.ANSWER_WRONG -> {
+                        rivalThirdAnswerStateIV.setColorFilter(ResourcesCompat.getColor(resources,R.color.red,null))
+                        rivalQuestionNumber++
+                    }
+                }
+            }
+        })
+
+
+    }
+    private fun observeDataStateTimes(){
+        viewModel.dataStateGetTime.observe(viewLifecycleOwner, Observer {
+            if (it is DataState.Success){
+                if (isFirstTimeToGetTime){
+                    times.add(it.data!!)
+                    isFirstTimeToGetTime = false
+                    viewModel.getTime(roomId,rivalRole)
+                }
+                else {
+                    times.add(it.data!!)
+                    endGame()
+                }
+            }
+        })
+    }
+    private fun observeDataStateTimeSetting(){
+        viewModel.dataStateSetTime.observe(viewLifecycleOwner, Observer {
+            notifyFinishCurrentQuarter()
+        })
     }
     /////
 
@@ -417,12 +463,9 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
         yourPointsTV.text = "${yourPointsTV.text.toString().toInt()+point}"
     }
     private fun setAnswer(answer: Int, state: Boolean){
-        //online
-        viewModel.setAnswer(answer, roomId, myRole)
-        //offline
-        if (answer == FirebaseProvider.ANSWER_NO_TIME) return
         when(yourQuestionNumber%3){
             0 -> {
+                viewModel.setAnswer(answer, roomId, myRole,1)
                 if (state) yourFirstAnswerStateIV.setColorFilter(
                     ResourcesCompat.getColor(
                         resources,
@@ -439,6 +482,7 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
                 )
             }
             1 -> {
+                viewModel.setAnswer(answer, roomId, myRole,2)
                 if (state) yourSecondAnswerStateIV.setColorFilter(
                     ResourcesCompat.getColor(
                         resources,
@@ -455,6 +499,7 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
                 )
             }
             2 -> {
+                viewModel.setAnswer(answer, roomId, myRole,3)
                 if (state) yourThirdAnswerStateIV.setColorFilter(
                     ResourcesCompat.getColor(
                         resources,
@@ -482,10 +527,9 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
 
     private fun checkQuarterFinishing(){
         if (yourQuestionNumber == QUARTER_2-1 || yourQuestionNumber == QUARTER_3-1 || yourQuestionNumber == QUARTER_4-1 || yourQuestionNumber == END_GAME-1){
+            restDialog.show()
             addTime(timeCounter)
             resetTimer()
-            restDialog.show()
-            notifyFinishCurrentQuarter()
         }
     }
     private fun timeFinished(){
@@ -497,11 +541,21 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
             9,10,11 -> yourQuestionNumber = END_GAME
         }
         resetTimer()
-        setAnswer(FirebaseProvider.ANSWER_NO_TIME,false)
         notifyFinishCurrentQuarter()
     }
     private fun endGame(){
-
+        viewModel.deleteRoom(roomId)
+        restDialog.dismiss()
+        val previousBundle = requireArguments()
+        val bundle = Bundle()
+        bundle.putInt("point_you",yourPointsTV.text.toString().toInt())
+        bundle.putInt("point_rival",rivalPointsTV.text.toString().toInt())
+        bundle.putInt("time_you",times[0])
+        bundle.putInt("time_rival",times[1])
+        bundle.putInt("avatar_rival",previousBundle.getInt("avatar"))
+        bundle.putInt("team_rival",previousBundle.getInt("team"))
+        bundle.putString("username_rival",previousBundle.getString("username"))
+        Navigation.findNavController(btn_next_match_fragment).navigate(R.id.action_matchFragment_to_resultFragment,bundle)
     }
     private fun judgeAnswer(answer: Int){
         //correct
@@ -534,9 +588,12 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
             )
             setAnswer(FirebaseProvider.ANSWER_WRONG, false)
         }
-        checkQuarterFinishing()
-        yourQuestionNumber++
-        if (yourQuestionNumber != END_GAME) setupNext()
+        CoroutineScope(Main).launch {
+            delay(700)
+            checkQuarterFinishing()
+            yourQuestionNumber++
+            if (yourQuestionNumber != END_GAME) setupNext()
+        }
 
     }
 
@@ -604,15 +661,23 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
         if (clickAllowed){
             when(v!!.id){
                 firstAnswerTV.id -> {
+//                    finishTimeAllowed = false
+                    clickAllowed = false
                     judgeAnswer(1)
                 }
                 secondAnswerTV.id -> {
+//                    finishTimeAllowed = false
+                    clickAllowed = false
                     judgeAnswer(2)
                 }
                 thirdAnswerTV.id -> {
-                    judgeAnswer(3)
+//                    finishTimeAllowed = false
+                    clickAllowed = false
+                     judgeAnswer(3)
                 }
                 fourthAnswerTV.id -> {
+//                    finishTimeAllowed = false
+                    clickAllowed = false
                     judgeAnswer(4)
                 }
             }
@@ -643,12 +708,14 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
     inner class MyTimer : TimerTask() {
         override fun run() {
             requireActivity().runOnUiThread(Runnable {
-                if (progressTimer.progress == 295){
+                if (progressTimer.progress == 290){
                     clickAllowed = false
                 }
                 if (progressTimer.progress == 300) {
+
                     timeFinished()
                     if (yourQuestionNumber != END_GAME) setupNext()
+
                 }
                 if (progressTimer.progress == 200) {
                     colorAnimation.start()
@@ -666,6 +733,12 @@ class MatchFragment : Fragment(R.layout.fragment_match) , View.OnClickListener{
                 }
             })
         }
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.detachMatchListener()
     }
 
 }

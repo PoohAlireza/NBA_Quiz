@@ -107,6 +107,7 @@ class ChooseAvatarFragment : Fragment(R.layout.fragment_choose_avatar) {
                     displayProgress(false)
                     registerSharedPref.register(true)
                     startActivity(Intent(requireContext(), MainActivity::class.java))
+                    requireActivity().finish()
                 }
             }
         })

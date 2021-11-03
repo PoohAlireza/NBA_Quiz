@@ -47,10 +47,22 @@ class WaitingViewModel @Inject constructor(private val localRepository: LocalRep
     val dataStateRivalInfo:LiveData<DataState<Map<String, Any?>>>
         get() = _dataStateRivalInfo
 
+    //invite
+    private val _dataStateSendInvitation:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateSendInvitation:LiveData<DataState<String>>
+        get() = _dataStateSendInvitation
+
+    private val _dataStateInvitationAnswer:MutableLiveData<DataState<Int>> = MutableLiveData()
+    val dataStateInvitationAnswer:LiveData<DataState<Int>>
+        get() = _dataStateInvitationAnswer
+
+    private val _dataStateInvitationRoom:MutableLiveData<DataState<String>> = MutableLiveData()
+    val dataStateInvitationRoom:LiveData<DataState<String>>
+        get() = _dataStateInvitationRoom
+
     fun initUserData(){
         _userData.value = localRepository.getUserFromPref()
     }
-
     //P2
     fun joinRoom(){
         viewModelScope.launch {
@@ -158,6 +170,41 @@ class WaitingViewModel @Inject constructor(private val localRepository: LocalRep
         viewModelScope.launch {
             firebaseRepository.getPlayerInfo(roomId,role).collect {
                 _dataStateRivalInfo.value = it
+            }
+        }
+    }
+
+
+    //invite
+    //P1
+    fun sendInvite(rivalId:String){
+        viewModelScope.launch {
+            firebaseRepository.sendInvitation(rivalId).collect {
+                _dataStateSendInvitation.value = it
+            }
+        }
+    }
+    //P1
+    fun observeInvitationAnswer(rivalId:String){
+        viewModelScope.launch {
+            firebaseRepository.observeInvitationAnswer(rivalId).collect {
+                _dataStateInvitationAnswer.value = it
+            }
+        }
+    }
+    //P1
+    fun createInvitationRoom(){
+        viewModelScope.launch {
+            firebaseRepository.createInvitationRoom().collect {
+                _dataStateInvitationRoom.value = it
+            }
+        }
+    }
+    //P1
+    fun setRoomIdForInvitedPlayer(userId:String , roomId: String){
+        viewModelScope.launch {
+            firebaseRepository.setRoomId(roomId = roomId , userId =  userId).collect {
+
             }
         }
     }

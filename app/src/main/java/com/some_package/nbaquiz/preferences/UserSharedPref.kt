@@ -49,6 +49,33 @@ class UserSharedPref @Inject constructor(@PrefModule.UserPref private val shared
         return user
     }
 
+    fun incrementGame():Int{
+        val editor = sharedPreferences.edit()
+        val previousGameCount = sharedPreferences.getInt("games",-1)
+        val currentGameCount = previousGameCount+1
+        editor.putInt("games",currentGameCount)
+        editor.apply()
+        return currentGameCount
+    }
+
+    fun incrementWin():Int{
+        val editor = sharedPreferences.edit()
+        val previousWinCount = sharedPreferences.getInt("wins",-1)
+        val currentWinCount = previousWinCount+1
+        editor.putInt("wins",currentWinCount)
+        editor.apply()
+        return currentWinCount
+    }
+
+    fun incrementPoint(point:Int):Int{
+        val editor = sharedPreferences.edit()
+        val previousPointCount = sharedPreferences.getInt("points",-1)
+        val currentPointCount = previousPointCount+point
+        editor.putInt("points",currentPointCount)
+        editor.apply()
+        return currentPointCount
+    }
+
 
 
 }

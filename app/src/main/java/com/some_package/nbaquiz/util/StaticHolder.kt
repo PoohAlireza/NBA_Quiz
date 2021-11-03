@@ -22,6 +22,10 @@ class StaticHolder {
     companion object{
         val KIND_FIND_RIVAL = 100
 
+        val FRIENDLY_GUEST = 3
+        val FRIENDLY_HOST = 2
+        val RANDOMLY = 1
+
         var onGameKindPageSelected: OnGameKindPageSelected? = null
 
 
@@ -113,6 +117,8 @@ class StaticHolder {
             R.drawable.avatar_7, R.drawable.avatar_8, R.drawable.avatar_9,
             R.drawable.avatar_10, R.drawable.avatar_11, R.drawable.avatar_12
         )
+
+
 
 
     fun addQuestionForAdmin(jsonArray: String?) {

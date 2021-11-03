@@ -107,6 +107,22 @@
             android:visibility="visible"
             />
 
+        <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
+            android:id="@+id/tv_warning_waiting_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cocoa_milk"
+            android:textSize="@dimen/text_size_small_X2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:paddingHorizontal="8dp"
+            tools:text="The person you invited is currently in another match"
+            android:gravity="center"
+            android:visibility="gone"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

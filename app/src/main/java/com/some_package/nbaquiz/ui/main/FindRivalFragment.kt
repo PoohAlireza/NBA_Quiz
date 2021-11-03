@@ -55,7 +55,9 @@ class FindRivalFragment : Fragment(R.layout.fragment_find_rival) {
 
     private fun setupFindButton() {
         findBTN.setOnClickListener {
-            startActivity(Intent(requireContext(),MatchActivity::class.java))
+            val intent  = Intent(requireActivity(),MatchActivity::class.java)
+            intent.putExtra("kind",StaticHolder.RANDOMLY)
+            startActivity(intent)
         }
     }
 
@@ -81,7 +83,10 @@ class FindRivalFragment : Fragment(R.layout.fragment_find_rival) {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         searchAdapter = RecyclerSearchAdapter(requireContext(),users,object : OnInviteClicked{
             override fun onInviteClicked(user: User, position: Int) {
-                //go to waiting frag
+                val intent  = Intent(requireActivity(),MatchActivity::class.java)
+                intent.putExtra("kind",StaticHolder.FRIENDLY_HOST)
+                intent.putExtra("user_id",user.id)
+                startActivity(intent)
             }
 
         })

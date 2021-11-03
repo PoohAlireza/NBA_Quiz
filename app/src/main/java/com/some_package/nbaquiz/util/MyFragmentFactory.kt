@@ -7,6 +7,7 @@ import com.some_package.nbaquiz.ui.main.MainPageFragment
 import com.some_package.nbaquiz.ui.main.ProfileFragment
 import com.some_package.nbaquiz.ui.main.RankingFragment
 import com.some_package.nbaquiz.ui.match.MatchFragment
+import com.some_package.nbaquiz.ui.match.ResultFragment
 import com.some_package.nbaquiz.ui.match.WaitingFragment
 import com.some_package.nbaquiz.ui.register.ChooseAvatarFragment
 import com.some_package.nbaquiz.ui.register.ChooseNameFragment
@@ -32,6 +33,7 @@ class MyFragmentFactory  : FragmentFactory() {
 
             WaitingFragment::javaClass.name -> WaitingFragment()
             MatchFragment::javaClass.name -> MatchFragment()
+            ResultFragment::javaClass.name -> ResultFragment()
 
             else ->super.instantiate(classLoader, className)
         }
