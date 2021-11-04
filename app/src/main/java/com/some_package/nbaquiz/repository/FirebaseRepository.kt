@@ -476,7 +476,7 @@ class FirebaseRepository @Inject constructor(
 
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TAG, "observeP2: error")
-                TODO("Not yet implemented")
+
             }
 
         })

@@ -333,7 +333,11 @@ class MainActivity : AppCompatActivity() , View.OnClickListener {
                         notification.dismiss()
                         val intent  = Intent(this@MainActivity, MatchActivity::class.java)
                         intent.putExtra("kind",StaticHolder.FRIENDLY_GUEST)
-                        intent.putExtra("user",it.data)
+                        val map = HashMap<String,Any?>()
+                        map["username"] = it.data.username
+                        map["avatar"] = it.data.avatar
+                        map["team"] = it.data.team
+                        intent.putExtra("user",map)
                         startActivity(intent)
                     }
 

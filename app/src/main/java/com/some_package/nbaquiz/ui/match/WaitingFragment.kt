@@ -54,6 +54,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeDataStateMyInfo()
         observeDataStateMyStatus()
         setImBusy()
+        setupStartMatchButton()
     }
 
 
@@ -123,10 +124,10 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeDataStateRivalInfo()
         observeDataStateStatingGameStatus()
         findRival()
-        setupStartMatchButton()
+
     }
     private fun runAsHostFriendly(){
-        val rivalId = requireArguments().getString("user_id")
+        val rivalId = requireActivity().intent.getStringExtra("user_id")
         viewModel.sendInvite(rivalId!!)
         observeDataStateInvitation()
         observeDataStateInvitationAnswer()
@@ -137,12 +138,10 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         observeDataStateRivalInfo()
     }
     private fun runAsGuestFriendly(){
-        val user = requireArguments().getParcelable<User>("user")
-        rivalInfo["username"] = user!!.username
-        rivalInfo["avatar"] = user.avatar
-        rivalInfo["team"] = user.team
-        rivalAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(),StaticHolder.avatars[user.avatar!!]))
-        rivalNameTV.text = user.username
+        val map:HashMap<String,Any?> = requireActivity().intent.getSerializableExtra("user") as HashMap<String, Any?>
+        rivalInfo.putAll(map)
+        rivalAvatarIV.setImageDrawable(ContextCompat.getDrawable(requireContext(),StaticHolder.avatars[map["avatar"] as Int]))
+        rivalNameTV.text = map["username"] as String
         progress.visibility = View.GONE
         rivalNameTV.visibility = View.VISIBLE
         rivalAvatarIV.visibility = View.VISIBLE
@@ -299,7 +298,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     warningTV.visibility = View.VISIBLE
                 }
                 is DataState.Success -> {
-                    viewModel.observeInvitationAnswer(requireArguments().getString("user_id")!!)
+                    viewModel.observeInvitationAnswer(requireActivity().intent.getStringExtra("user_id")!!)
                 }
                 is DataState.Error -> {
                     Log.i(TAG, "observeDataStateInvitation: $it")
@@ -342,7 +341,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                 is DataState.Success ->{
                     roomId = it.data!!
                     myRole = FirebaseProvider.HOST
-                    viewModel.setRoomIdForInvitedPlayer(requireArguments().getString("user_id")!!,roomId)
+                    viewModel.setRoomIdForInvitedPlayer(requireActivity().intent.getStringExtra("user_id")!!,roomId)
                     observeP2()
                 }
                 is DataState.Error -> {
