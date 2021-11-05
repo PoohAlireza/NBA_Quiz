@@ -17,6 +17,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import kotlin.random.Random
+import kotlin.random.Random.Default.nextInt
 
 @ExperimentalCoroutinesApi
 class FirebaseRepository @Inject constructor(
@@ -28,6 +30,7 @@ class FirebaseRepository @Inject constructor(
 
     private val gameListeners = HashMap<DatabaseReference, ValueEventListener>()
     private val roomPreparingListeners = HashMap<DatabaseReference, ValueEventListener>()
+    private val observeInvitation = HashMap<DatabaseReference, ValueEventListener>()
 
     override suspend fun registerUser(user: User): Flow<DataState<User>> = callbackFlow {
         offer(DataState.Loading)
@@ -178,22 +181,28 @@ class FirebaseRepository @Inject constructor(
     override suspend fun getQuestionsFromFireStore(): Flow<DataState<List<Question>>> = callbackFlow {
         offer(DataState.Loading)
         val questionList:ArrayList<Question> = ArrayList()
-        // todo we must get randomly
-        firebaseProvider.fireStore.collection(FirebaseProvider.QUESTIONS_COLLECTION_KEY).limit(12).orderBy(
-            "id",
-            Query.Direction.ASCENDING
-        ).get().addOnSuccessListener {
+        val randomIds = IntArray(12)
+        val ref = firebaseProvider.fireStore.collection(FirebaseProvider.QUESTIONS_COLLECTION_KEY)
 
-            for (ds in it.documents){
-                questionList.add(ds.toObject(Question::class.java)!!)
+        firebaseProvider.fireStore.collection("questions-count").document("questions-count").get().addOnSuccessListener { it ->
+            val size = it.getLong("questions-count")!!.toInt()
+            val remaining = size % randomIds.size
+            val part = size / randomIds.size
+            for (i in 0 until randomIds.size -1){
+                randomIds[i] = ((part*i)+1 .. part*(i+1)).random()
             }
-            Log.i(TAG, "getQuestionsFromFireStore: umad")
-            offer(DataState.Success(questionList))
-            Log.i(TAG, "getQuestionsFromRooms: $questionList")
+            randomIds[randomIds.size-1] = ((part*randomIds.size-1)+1 .. (part*randomIds.size)+remaining).random()
 
-        }.addOnFailureListener {
-            Log.i(TAG, "getQuestionsFromFireStore: error")
-            offer(DataState.Error(it))
+            for (i in 0 until randomIds.size-1){
+                ref.whereEqualTo("id",randomIds[i]).get().addOnSuccessListener { docs ->
+                    questionList.add(docs.documents[0].toObject(Question::class.java)!!)
+                }
+            }
+            ref.whereEqualTo("id",randomIds[randomIds.size-1]).get().addOnSuccessListener { docs ->
+                questionList.add(docs.documents[0].toObject(Question::class.java)!!)
+                offer(DataState.Success(questionList))
+            }
+
         }
         awaitClose {
             cancel()
@@ -803,22 +812,8 @@ class FirebaseRepository @Inject constructor(
         }
     }
 
-    // TODO: 28/10/2021 call where?
-    override suspend fun setImEmpty(): Flow<DataState<Int>> = callbackFlow {
 
-        firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child(
-            "status"
-        )
-            .setValue(FirebaseProvider.EMPTY).addOnSuccessListener {
-                offer(DataState.Success(FirebaseProvider.EMPTY))
-            }.addOnFailureListener {
-                offer(DataState.Error(it))
-            }
-
-        awaitClose {
-            cancel()
-        }
-    }
+    /////////detach listeners///////
 
     override fun detachRoomPreparingListeners() {
         for (ref in roomPreparingListeners.keys){
@@ -831,6 +826,8 @@ class FirebaseRepository @Inject constructor(
             ref.removeEventListener(gameListeners[ref]!!)
         }
     }
+
+    /////////////////////////////////
 
     //invite
 
@@ -884,6 +881,11 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
+    override fun detachObserveInvitation() {
+        for (ref in observeInvitation.keys){
+            ref.removeEventListener(observeInvitation[ref]!!)
+        }
+    }
     //P2
     override suspend fun getInviterInfo(userId:String): Flow<DataState<User>> = callbackFlow {
         offer(DataState.Loading)
@@ -922,12 +924,13 @@ class FirebaseRepository @Inject constructor(
     override suspend fun observeInvitationAnswer(userId: String): Flow<DataState<Int>> = callbackFlow {
 
         val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userId).child("accept")
-        val listener = ref.addValueEventListener(object : ValueEventListener{
+        ref.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
                     val answer = snapshot.getValue(Int::class.java)
                     if (answer!=null && (answer == FirebaseProvider.INVITE_ANSWER_ACCEPT || answer == FirebaseProvider.INVITE_ANSWER_DECLINE)){
                         offer(DataState.Success(answer))
+                        ref.removeEventListener(this)
                     }
                 }
             }
@@ -937,7 +940,6 @@ class FirebaseRepository @Inject constructor(
             }
 
         })
-
         awaitClose {
             cancel()
         }
@@ -998,12 +1000,13 @@ class FirebaseRepository @Inject constructor(
     override suspend fun observeRoomId(): Flow<DataState<String>> = callbackFlow {
 
         val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("room-id")
-        val listener = ref.addValueEventListener(object : ValueEventListener{
+        ref.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                if (snapshot.exists()){
                    val result = snapshot.getValue(String::class.java)
                    if (result != null && result.isNotEmpty()){
                        offer(DataState.Success(result))
+                       ref.removeEventListener(this)
                    }
                }
             }
@@ -1044,12 +1047,18 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
-    //P2 //?
-    override suspend fun backToDefaultAfterDecline(): Flow<DataState<String>> = callbackFlow {
 
-        setImEmpty()
-        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("rival-id")
-        ref.setValue("").addOnSuccessListener {
+    override suspend fun resetUserAttrsInRealTime(resetStatus:Boolean,resetRivalId:Boolean,resetRoomId:Boolean,resetAnswerStatus:Boolean): Flow<DataState<String>> = callbackFlow {
+
+        val map = HashMap<String,Any?>()
+        if (resetStatus) map["status"] = FirebaseProvider.EMPTY
+        if (resetRivalId) map["rival-id"] = ""
+        if (resetRoomId) map["room-id"] = ""
+        if (resetAnswerStatus) map["accept"] = FirebaseProvider.INVITE_ANSWER_EMPTY
+
+        val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!)
+
+        ref.updateChildren(map).addOnSuccessListener {
             offer(DataState.Success("success"))
         }.addOnFailureListener {
             offer(DataState.Error(it))

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="ltr"
     tools:context=".ui.register.ChooseAvatarFragment">
 
     <ImageView
@@ -21,8 +22,8 @@
 
         <ImageView
             android:id="@+id/iv_back_choose_avatar"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/size_back_arrow"
+            android:layout_height="@dimen/size_back_arrow"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/ic_back"
@@ -57,8 +58,8 @@
 
     <ImageView
         android:id="@+id/iv_avatar_choose_avatar_fragment"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="@dimen/size_avatar_frag_choose_avatar"
+        android:layout_height="@dimen/size_avatar_frag_choose_avatar"
         android:src="@drawable/avatar_1"
         app:layout_constraintBottom_toTopOf="@id/tv_name_choose_avatar_fragment"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -98,8 +99,8 @@
 
     <com.some_package.nbaquiz.custom_view.CustomLoading
         android:id="@+id/progress_choose_avatar_fragment"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/width_progress_frag_choose_avatar"
+        android:layout_height="@dimen/height_progress_frag_choose_avatar"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

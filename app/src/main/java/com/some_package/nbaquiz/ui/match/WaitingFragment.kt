@@ -224,6 +224,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
         viewModel.dataStateStartingStatus.observe(viewLifecycleOwner, Observer {
             when (it){
                 is DataState.Success ->{
+
                     // P1 & P2
                     // start game ::: we have room Id and questions
 
@@ -363,6 +364,7 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     roomId = it.data!!
                     myRole = FirebaseProvider.GUEST
                     viewModel.observeQuestionsAddingStatus(it.data)
+                    viewModel.resetUserInRealTime(resetAnswerStatus = true , resetRivalId = true , resetRoomId = true , resetStatus = false)
                 }
                 is DataState.Error -> {
                     Log.i(TAG, "observeDataStateInvitationAnswer: $it")

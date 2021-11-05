@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_register"
+    android:layoutDirection="ltr"
     tools:context=".ui.match.ResultFragment">
 
 

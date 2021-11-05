@@ -11,7 +11,6 @@ import com.some_package.nbaquiz.model.Option
 import com.some_package.nbaquiz.model.Question
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 
 class StaticHolder {
@@ -125,7 +124,9 @@ class StaticHolder {
         try {
             val jsonObject = JSONObject(jsonArray!!)
             val array = jsonObject.getJSONArray("questions")
-            val cf = FirebaseFirestore.getInstance().collection("questions")
+            val sizeToAdd = array.length()
+            val questionsRef = FirebaseFirestore.getInstance().collection("questions")
+            val questionsCountRef = FirebaseFirestore.getInstance().collection("questions-count").document("questions-count")
             ////////////////
             for (i in 0 until array.length()) {
                 val question = Question()
@@ -143,12 +144,16 @@ class StaticHolder {
                 question.answer = index.getString("answer").toInt()
                 question.question = index.getString("question")
 
-                cf.add(question).addOnSuccessListener {
+                questionsRef.add(question).addOnSuccessListener {
                     Log.i("admin", "addQuestionForAdmin: question added ! ")
                 }.addOnFailureListener {
                     Log.i("admin", "addQuestionForAdmin: question not added!!!!!!!!!!!!!")
                 }
             }
+           questionsCountRef.get().addOnSuccessListener {
+               val newSize = it.getLong("questions-count")!!.toInt()+sizeToAdd
+               it.reference.update("questions-count",newSize)
+           }
         } catch (e: JSONException) {
             e.printStackTrace()
         }

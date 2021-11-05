@@ -74,11 +74,12 @@ class MainActivity : AppCompatActivity() , View.OnClickListener {
         super.onResume()
         viewModel.initUserData()
         viewModel.observeInvitation()
+        viewModel.resetUserInRealTime(resetStatus = true , resetRivalId = false, resetRoomId = false, resetAnswerStatus = false)
     }
 
     override fun onStop() {
         super.onStop()
-
+        viewModel.detachObserveInvitation()
     }
 
 

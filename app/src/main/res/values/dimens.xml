@@ -9,8 +9,52 @@
 
     <dimen name="margin_hor_page_X1">20dp</dimen>
     <dimen name="margin_hor_page_X2">32dp</dimen>
+    <dimen name="padding_hor_page_X1">24dp</dimen>
+    <dimen name="padding_hor_page_X2">32dp</dimen>
 
+
+    //Activity Splash
+    <dimen name="margin_hor_text">48dp</dimen>
+    <dimen name="height_progress_splash">40dp</dimen>
+    <dimen name="width_progress_splash">110dp</dimen>
+    //Activity Main
+    <dimen name="height_navigation_bar">58dp</dimen>
+    <dimen name="size_icon_navigation_bar">28dp</dimen>
+    <dimen name="height_top_screen_profile">70dp</dimen>
+    <dimen name="size_icon_top_screen_profile">20dp</dimen>
+    <dimen name="size_avatar_top_screen_profile">54dp</dimen>
+    <dimen name="padding_avatar_top_screen_profile">10dp</dimen>
+    <dimen name="margin_from_top_screen_profile">16dp</dimen>
+    //Fragment Choose Avatar
+    <dimen name="size_back_arrow">28dp</dimen>
+    <dimen name="size_avatar_frag_choose_avatar">72dp</dimen>
+    <dimen name="height_progress_frag_choose_avatar">30dp</dimen>
+    <dimen name="width_progress_frag_choose_avatar">100dp</dimen>
+    //Fragment Choose Name
+    <dimen name="size_progress_frag_choose_name">24dp</dimen>
+    //Fragment Ranking
+    <dimen name="height_card_rank">140dp</dimen>
+    <dimen name="width_card_rank">100dp</dimen>
+    <dimen name="size_avatar_card_rank">48dp</dimen>
+    <dimen name="size_rank_number">32dp</dimen>
+    <dimen name="height_progress_frag_ranking">60dp</dimen>
+    <dimen name="width_progress_frag_ranking">120dp</dimen>
+    //Fragment Profile
+    <dimen name="height_attrs_card_frag_profile">160dp</dimen>
+    <dimen name="padding_ver_attrs_card_frag_profile">32dp</dimen>
+    <dimen name="size_icon_frag_profile">24dp</dimen>
+    <dimen name="size_avatar_frag_profile">72dp</dimen>
+    <dimen name="padding_avatar_frag_profile">13dp</dimen>
+    //Fragment Match
     <dimen name="question_box">360dp</dimen>
     <dimen name="option_box">180dp</dimen>
+    <dimen name="margin_bottom_question_box">16dp</dimen>
+    <dimen name="size_divider_options">32dp</dimen>
+    <dimen name="size_quarter_icon">16dp</dimen>
+    <dimen name="padding_hor_box_match_profiles">16dp</dimen>
+    <dimen name="size_avatar_match">72dp</dimen>
+    <dimen name="size_icon_answer">24dp</dimen>
+    <dimen name="size_timer">64dp</dimen>
+
 
 </resources>

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingHorizontal="24dp"
+    android:paddingHorizontal="@dimen/padding_hor_page_X1"
+    android:layoutDirection="ltr"
     tools:context=".ui.main.MainPageFragment">
 
 

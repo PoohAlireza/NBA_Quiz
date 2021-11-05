@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layoutDirection="ltr"
     tools:context=".ui.main.RankingFragment">
 
     <LinearLayout
@@ -14,15 +15,14 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:paddingHorizontal="8dp"
             android:layout_width="match_parent"
             android:layout_weight=".8"
             android:layout_height="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_rank_1"
-                android:layout_width="100dp"
-                android:layout_height="140dp"
+                android:layout_width="@dimen/width_card_rank"
+                android:layout_height="@dimen/height_card_rank"
                 android:background="@drawable/shape_rounded_16dp"
                 android:backgroundTint="@color/dark_trans"
                 custom:layout_constraintTop_toTopOf="parent"
@@ -46,8 +46,8 @@
 
                 <ImageView
                     android:id="@+id/iv_rank_1_ranking_fragment"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/size_avatar_card_rank"
+                    android:layout_height="@dimen/size_avatar_card_rank"
                     android:src="@drawable/avatar_3"
                     custom:layout_constraintLeft_toLeftOf="parent"
                     custom:layout_constraintRight_toRightOf="parent"
@@ -90,8 +90,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_rank_2"
-                android:layout_width="100dp"
-                android:layout_height="140dp"
+                android:layout_width="@dimen/width_card_rank"
+                android:layout_height="@dimen/height_card_rank"
                 android:background="@drawable/shape_rounded_16dp"
                 android:backgroundTint="@color/dark_trans"
                 custom:layout_constraintTop_toTopOf="parent"
@@ -115,8 +115,8 @@
 
                 <ImageView
                     android:id="@+id/iv_rank_2_ranking_fragment"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/size_avatar_card_rank"
+                    android:layout_height="@dimen/size_avatar_card_rank"
                     android:src="@drawable/avatar_12"
                     custom:layout_constraintLeft_toLeftOf="parent"
                     custom:layout_constraintRight_toRightOf="parent"
@@ -158,8 +158,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_rank_3"
-                android:layout_width="100dp"
-                android:layout_height="140dp"
+                android:layout_width="@dimen/width_card_rank"
+                android:layout_height="@dimen/height_card_rank"
                 android:background="@drawable/shape_rounded_16dp"
                 android:backgroundTint="@color/dark_trans"
                 custom:layout_constraintTop_toTopOf="parent"
@@ -183,8 +183,8 @@
 
                 <ImageView
                     android:id="@+id/iv_rank_3_ranking_fragment"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/size_avatar_card_rank"
+                    android:layout_height="@dimen/size_avatar_card_rank"
                     android:src="@drawable/avatar_11"
                     custom:layout_constraintLeft_toLeftOf="parent"
                     custom:layout_constraintRight_toRightOf="parent"
@@ -233,8 +233,8 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/size_rank_number"
+                    android:layout_height="@dimen/size_rank_number"
                     android:src="@drawable/bg_rank"
                     />
                 <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
@@ -255,8 +255,8 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/size_rank_number"
+                    android:layout_height="@dimen/size_rank_number"
                     android:src="@drawable/bg_rank"
                     />
                 <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
@@ -277,8 +277,8 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/size_rank_number"
+                    android:layout_height="@dimen/size_rank_number"
                     android:src="@drawable/bg_rank"
                     />
                 <com.some_package.nbaquiz.custom_view.CustomTextViewRaleway
@@ -298,7 +298,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:paddingHorizontal="28dp"
+            android:paddingHorizontal="@dimen/padding_hor_page_X1"
             android:id="@+id/rv_ranking_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -311,8 +311,8 @@
 
     <com.some_package.nbaquiz.custom_view.CustomLoading
         android:id="@+id/loading_ranking"
-        android:layout_width="120dp"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/height_progress_frag_ranking"
+        android:layout_width="@dimen/width_progress_frag_ranking"
         custom:layout_constraintRight_toRightOf="parent"
         custom:layout_constraintLeft_toLeftOf="parent"
         custom:layout_constraintTop_toTopOf="parent"

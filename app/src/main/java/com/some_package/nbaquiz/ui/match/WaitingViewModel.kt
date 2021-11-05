@@ -230,5 +230,13 @@ class WaitingViewModel @Inject constructor(private val localRepository: LocalRep
         }
     }
 
+    fun resetUserInRealTime(resetStatus:Boolean,resetRivalId:Boolean,resetRoomId:Boolean,resetAnswerStatus:Boolean){
+        viewModelScope.launch {
+            firebaseRepository.resetUserAttrsInRealTime(resetRoomId = resetRoomId,resetRivalId = resetRivalId,resetAnswerStatus = resetAnswerStatus,resetStatus = resetStatus).collect {
+
+            }
+        }
+    }
+
 
 }

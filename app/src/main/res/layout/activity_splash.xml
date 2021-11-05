@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/bg_splash"
     android:layout_height="match_parent"
+    android:layoutDirection="ltr"
     tools:context=".ui.splash.SplashActivity">
 
 
@@ -20,7 +21,7 @@
             app:layout_constraintVertical_bias=".65"
             android:background="@drawable/shape_rounded_16dp"
             android:backgroundTint="@color/black_trans"
-            android:layout_marginHorizontal="48dp"
+            android:layout_marginHorizontal="@dimen/margin_hor_text"
             android:paddingHorizontal="32dp"
             android:paddingVertical="24dp"
             android:orientation="vertical">
@@ -30,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“I can accept failure, everyone fails at something. But I can’t accept not trying.”"
-                android:textSize="20sp"
+                android:textSize="@dimen/text_size_normal_X2"
                 android:textColor="@color/white"
                 android:layout_gravity="left"
                 />
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Michael Jordan"
-                android:textSize="20sp"
+                android:textSize="@dimen/text_size_normal_X2"
                 android:layout_gravity="right"
                 android:textColor="@color/white"
                 android:layout_marginTop="8dp"
@@ -52,9 +53,9 @@
 
 
     <com.some_package.nbaquiz.custom_view.CustomLoading
-        android:id="@+id/test_test"
-        android:layout_width="110dp"
-        android:layout_height="40dp"
+        android:id="@+id/progress_splash"
+        android:layout_width="@dimen/width_progress_splash"
+        android:layout_height="@dimen/height_progress_splash"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

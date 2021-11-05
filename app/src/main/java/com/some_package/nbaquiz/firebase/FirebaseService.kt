@@ -48,7 +48,6 @@ interface FirebaseService {
     suspend fun addPointsToUser(points:Int):Flow<DataState<Int>>
     suspend fun incrementWin():Flow<DataState<Int>>
     suspend fun deleteRoomAfterMatch(roomId: String):Flow<DataState<String>>
-    suspend fun setImEmpty():Flow<DataState<Int>>
     fun detachRoomPreparingListeners()
     fun detachGameListeners()
     //invite
@@ -58,9 +57,11 @@ interface FirebaseService {
     suspend fun setRoomId(roomId: String , userId:String):Flow<DataState<String>>
 
     suspend fun observeInvitation():Flow<DataState<String>>
+    fun detachObserveInvitation()
     suspend fun getInviterInfo(userId:String):Flow<DataState<User>>
     suspend fun answerToInvitation(answer:Int):Flow<DataState<String>>
     suspend fun observeRoomId():Flow<DataState<String>>
     suspend fun joinToInvitationRoom(roomId: String):Flow<DataState<String>>
-    suspend fun backToDefaultAfterDecline():Flow<DataState<String>>
+    suspend fun resetUserAttrsInRealTime(resetStatus:Boolean,resetRivalId:Boolean,resetRoomId:Boolean,resetAnswerStatus:Boolean):Flow<DataState<String>>
+
 }

@@ -3,6 +3,8 @@
 
     <dimen name="question_box">580dp</dimen>
     <dimen name="option_box">280dp</dimen>
+    <dimen name="height_navigation_bar">100dp</dimen>
+    <dimen name="size_icon_navigation_bar">48dp</dimen>
 
 
 </resources>

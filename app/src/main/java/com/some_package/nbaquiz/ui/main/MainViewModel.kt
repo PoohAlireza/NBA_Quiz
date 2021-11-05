@@ -81,6 +81,10 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
         }
     }
 
+    fun detachObserveInvitation(){
+        firebaseRepository.detachObserveInvitation()
+    }
+
     private suspend fun getInviterInfo(userId:String){
         firebaseRepository.getInviterInfo(userId).collect {
             _dataStateMyInvitationState.value = it
@@ -97,8 +101,16 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     }
 
     private suspend fun declineInvite(){
-        firebaseRepository.backToDefaultAfterDecline().collect {
+        firebaseRepository.resetUserAttrsInRealTime(resetStatus = true,resetRivalId = true,resetRoomId = true,resetAnswerStatus = true).collect {
 
+        }
+    }
+
+    fun resetUserInRealTime(resetStatus:Boolean,resetRivalId:Boolean,resetRoomId:Boolean,resetAnswerStatus:Boolean){
+        viewModelScope.launch {
+            firebaseRepository.resetUserAttrsInRealTime(resetStatus = resetStatus , resetRivalId = resetRivalId , resetRoomId = resetRoomId , resetAnswerStatus = resetAnswerStatus).collect {
+
+            }
         }
     }
 

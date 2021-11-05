@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="ltr"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_main"
     tools:context=".ui.main.MainActivity">
@@ -28,7 +29,7 @@
         <LinearLayout
             custom:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/height_navigation_bar"
             android:background="@drawable/shape_bg_bnv"
             android:orientation="horizontal"
             android:layoutDirection="ltr"
@@ -44,8 +45,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/size_icon_navigation_bar"
+                    android:layout_height="@dimen/size_icon_navigation_bar"
                     custom:layout_constraintRight_toRightOf="parent"
                     custom:layout_constraintLeft_toLeftOf="parent"
                     custom:layout_constraintTop_toTopOf="parent"
@@ -66,8 +67,8 @@
 
                 <ImageView
                     android:id="@+id/iv_middle_bnv"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/size_icon_navigation_bar"
+                    android:layout_height="@dimen/size_icon_navigation_bar"
                     android:src="@drawable/ic_ball"
                     custom:layout_constraintBottom_toBottomOf="parent"
                     custom:layout_constraintLeft_toLeftOf="parent"
@@ -88,8 +89,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/size_icon_navigation_bar"
+                    android:layout_height="@dimen/size_icon_navigation_bar"
                     custom:layout_constraintRight_toRightOf="parent"
                     custom:layout_constraintLeft_toLeftOf="parent"
                     custom:layout_constraintTop_toTopOf="parent"
@@ -106,7 +107,7 @@
 
         <View
             android:id="@+id/v_line_main_activity"
-            android:layout_width="58dp"
+            android:layout_width="60dp"
             android:layout_height="3dp"
             android:background="@drawable/shape_ic_ball_bnv"
             custom:layout_constraintRight_toRightOf="parent"
@@ -117,7 +118,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/height_top_screen_profile"
             custom:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/shape_stats"
             android:elevation="4dp"
@@ -140,8 +141,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/size_icon_top_screen_profile"
+                    android:layout_height="@dimen/size_icon_top_screen_profile"
                     android:src="@drawable/ic_points"
                     custom:tint="@color/orange"
                     />
@@ -153,7 +154,7 @@
                     android:text="8755"
                     android:layout_marginLeft="8dp"
                     android:textColor="@color/gray"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_small_X2"
                     />
 
 
@@ -174,8 +175,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/size_icon_top_screen_profile"
+                    android:layout_height="@dimen/size_icon_top_screen_profile"
                     android:src="@drawable/ic_team"
                     custom:tint="@color/orange"
                     />
@@ -187,7 +188,7 @@
                     android:text="CHI"
                     android:layout_marginLeft="8dp"
                     android:textColor="@color/gray"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_small_X2"
                     />
 
 
@@ -210,8 +211,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/size_icon_top_screen_profile"
+                    android:layout_height="@dimen/size_icon_top_screen_profile"
                     android:src="@drawable/ic_ball"
                     custom:tint="@color/orange"
                     />
@@ -223,7 +224,7 @@
                     android:text="687"
                     android:layout_marginLeft="8dp"
                     android:textColor="@color/gray"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_small_X2"
                     />
 
 
@@ -244,8 +245,8 @@
                 >
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/size_icon_top_screen_profile"
+                    android:layout_height="@dimen/size_icon_top_screen_profile"
                     android:src="@drawable/ic_wins"
                     custom:tint="@color/orange"
                     />
@@ -257,7 +258,7 @@
                     android:text="548"
                     android:layout_marginLeft="8dp"
                     android:textColor="@color/gray"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_small_X2"
                     />
 
 
@@ -267,7 +268,7 @@
                 android:id="@+id/tv_username_main_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_normal_X1"
                 android:textColor="@color/gray"
                 android:text="Hyakkimaru"
                 custom:layout_constraintLeft_toLeftOf="parent"
@@ -284,9 +285,9 @@
         <ImageView
             android:id="@+id/iv_profile_main_activity"
             android:background="@drawable/shape_bg_avatar"
-            android:padding="10dp"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:padding="@dimen/padding_avatar_top_screen_profile"
+            android:layout_width="@dimen/size_avatar_top_screen_profile"
+            android:layout_height="@dimen/size_avatar_top_screen_profile"
             android:src="@drawable/avatar_1"
             custom:layout_constraintLeft_toLeftOf="parent"
             custom:layout_constraintRight_toRightOf="parent"
@@ -304,7 +305,7 @@
             custom:navGraph="@navigation/nav_main"
             custom:layout_constraintTop_toBottomOf="@id/cl_toolbar"
             custom:layout_constraintBottom_toTopOf="@id/bnv_main"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/margin_from_top_screen_profile"
             />
 
 

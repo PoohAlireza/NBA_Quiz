@@ -164,5 +164,4 @@ class MatchViewModel @Inject constructor(private val localRepository: LocalRepos
         firebaseRepository.detachGameListeners()
     }
 
-
 }
