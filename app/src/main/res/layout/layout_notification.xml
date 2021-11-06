@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/iv_avatar_notification"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/size_avatar_notification"
+        android:layout_height="@dimen/size_avatar_notification"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
         android:text="Accept"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="16dp"
+        android:padding="@dimen/padding_btn_notification"
         />
 
     <com.some_package.nbaquiz.custom_view.CustomButtonQuicksand
@@ -49,7 +49,7 @@
         android:text="Decline"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="16dp"
+        android:padding="@dimen/padding_btn_notification"
         />
 
     <com.some_package.nbaquiz.custom_view.CustomTextViewQuicksand
@@ -79,8 +79,8 @@
 
         <ImageView
             android:id="@+id/icon_team_notif"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/size_icon_notification"
+            android:layout_height="@dimen/size_icon_notification"
             android:src="@drawable/ic_team"
             app:tint="@color/orange"
             />

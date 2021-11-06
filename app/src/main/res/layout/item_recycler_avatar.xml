@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/iv_item_list_avatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:padding="10dp"
+        android:layout_width="@dimen/size_avatar_recycler_avatar"
+        android:layout_height="@dimen/size_avatar_recycler_avatar"
+        android:padding="@dimen/padding_avatar_recycler_avatar"
         android:background="@drawable/shape_circle_unselected"
         tools:src="@drawable/avatar_12"/>
 

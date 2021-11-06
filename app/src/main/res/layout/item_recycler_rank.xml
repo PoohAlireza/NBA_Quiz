@@ -34,8 +34,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintHorizontal_bias=".03"
             android:id="@+id/iv_avatar_rank_list"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/size_avatar_recycler_rank"
+            android:layout_height="@dimen/size_avatar_recycler_rank"
             android:src="@drawable/avatar_1"
             />
 
@@ -74,8 +74,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/tv_points_rank_list"
             app:layout_constraintHorizontal_bias=".98"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/size_icon_point_recycler_rank"
+            android:layout_height="@dimen/size_icon_point_recycler_rank"
             android:src="@drawable/ic_points"
             app:tint="@color/orange" />
 
@@ -85,8 +85,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_username_rank_list"
             app:layout_constraintRight_toLeftOf="@id/iv_star_rank_list"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/size_avatar_recycler_rank"
+            android:layout_height="@dimen/size_avatar_recycler_rank"
             android:src="@drawable/logo_chi"
             />
 

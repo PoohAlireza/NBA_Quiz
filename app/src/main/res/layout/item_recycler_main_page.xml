@@ -8,18 +8,18 @@
 
 
     <RelativeLayout
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="@dimen/size_item_mode_recycler_main_page"
+        android:layout_height="@dimen/size_item_mode_recycler_main_page"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="@dimen/margin_top_box_recycler_main_page"
+            android:layout_marginHorizontal="@dimen/margin_hor_box_recycler_main_page"
             android:background="@drawable/shape_rounded_16dp"
             android:backgroundTint="@color/dark_trans"
-            android:padding="8dp"
+            android:padding="@dimen/padding_box_recycler_main_page"
             android:foreground="?attr/selectableItemBackground"
             >
 

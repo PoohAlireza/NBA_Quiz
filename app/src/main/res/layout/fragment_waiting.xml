@@ -36,8 +36,8 @@
 
         <ImageView
             android:id="@+id/iv_avatar_you_waiting_fragment"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
+            android:layout_width="@dimen/size_avatar_frag_waiting"
+            android:layout_height="@dimen/size_avatar_frag_waiting"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -74,8 +74,8 @@
 
         <ImageView
             android:id="@+id/iv_avatar_rival_waiting_fragment"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
+            android:layout_width="@dimen/size_avatar_frag_waiting"
+            android:layout_height="@dimen/size_avatar_frag_waiting"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -98,8 +98,8 @@
             />
 
         <com.some_package.nbaquiz.custom_view.CustomLoading
-            android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/width_progress_frag_waiting"
+            android:layout_height="@dimen/height_progress_frag_waiting"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -142,12 +142,12 @@
             android:layout_height="wrap_content"
             android:text="Preparing"
             android:textColor="@color/cocoa_milk"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_normal_X2"
             />
 
         <com.some_package.nbaquiz.custom_view.CustomLoading
-            android:layout_width="30dp"
-            android:layout_height="14dp"
+            android:layout_width="@dimen/width_preparing_frag_waiting"
+            android:layout_height="@dimen/height_preparing_frag_waiting"
             android:layout_marginLeft="8dp"
             android:layout_gravity="bottom"
             />

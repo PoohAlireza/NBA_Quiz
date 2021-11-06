@@ -55,6 +55,40 @@
     <dimen name="size_avatar_match">72dp</dimen>
     <dimen name="size_icon_answer">24dp</dimen>
     <dimen name="size_timer">64dp</dimen>
-
+    //Fragment Result
+    <dimen name="height_card_result">110dp</dimen>
+    <dimen name="width_card_result">180dp</dimen>
+    <dimen name="width_avatar_card_result">135dp</dimen>
+    <dimen name="size_cup_frag_result">58dp</dimen>
+    //Fragment Result
+    <dimen name="size_avatar_frag_waiting">84dp</dimen>
+    <dimen name="height_progress_frag_waiting">40dp</dimen>
+    <dimen name="width_progress_frag_waiting">100dp</dimen>
+    <dimen name="height_preparing_frag_waiting">14dp</dimen>
+    <dimen name="width_preparing_frag_waiting">30dp</dimen>
+    //item recycler avatar
+    <dimen name="size_avatar_recycler_avatar">64dp</dimen>
+    <dimen name="padding_avatar_recycler_avatar">10dp</dimen>
+    //item recycler main page
+    <dimen name="size_item_mode_recycler_main_page">250dp</dimen>
+    <dimen name="margin_top_box_recycler_main_page">16dp</dimen>
+    <dimen name="margin_hor_box_recycler_main_page">16dp</dimen>
+    <dimen name="padding_box_recycler_main_page">8dp</dimen>
+    //item recycler rank
+    <dimen name="size_avatar_recycler_rank">42dp</dimen>
+    <dimen name="size_icon_point_recycler_rank">24dp</dimen>
+    //item recycler search
+    <dimen name="size_avatar_recycler_search">64dp</dimen>
+    <dimen name="size_icon_recycler_search">24dp</dimen>
+    //dialog rest
+    <dimen name="height_progress_dialog_rest">26dp</dimen>
+    <dimen name="width_progress_dialog_rest">70dp</dimen>
+    <dimen name="margin_top_progress_dialog_rest">16dp</dimen>
+    <dimen name="size_icon_dialog_rest">40dp</dimen>
+    <dimen name="margin_left_icon_rest_dialog">16dp</dimen>
+    //notification
+    <dimen name="size_icon_notification">24dp</dimen>
+    <dimen name="size_avatar_notification">64dp</dimen>
+    <dimen name="padding_btn_notification">16dp</dimen>
 
 </resources>

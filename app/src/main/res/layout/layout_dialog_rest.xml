@@ -28,23 +28,23 @@
                 android:text="rest ..."
                 android:textSize="@dimen/text_size_big_X2"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
                 />
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/size_icon_dialog_rest"
+                android:layout_height="@dimen/size_icon_dialog_rest"
                 android:src="@drawable/ic_rest"
+                android:layout_marginLeft="@dimen/margin_left_icon_rest_dialog"
                 />
 
         </LinearLayout>
 
         <com.some_package.nbaquiz.custom_view.CustomLoading
-            android:layout_width="70dp"
-            android:layout_height="26dp"
+            android:layout_width="@dimen/width_progress_dialog_rest"
+            android:layout_height="@dimen/height_progress_dialog_rest"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_rest"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/margin_top_progress_dialog_rest"
             />
 
 
