@@ -261,13 +261,6 @@ class FirebaseRepository @Inject constructor(
         }
     }
 
-    // 1. first try to join a room then observe ::: if be able to join go line 3 otherwise go line 2
-    // 2. we observe an exception so we try to create a room by calling createRoom method and go line 3
-    // 3. so we have a roomId and are in a room ::: if we are P1 go line 4 otherwise go line 5
-    // 4. we are P1 so must observe P2 and then if P2 joined get questions and create a room
-    // 5. we are P2 so must observe questions and room creation status
-    // ...
-    //todo : i think must save the listeners and delete them after their job finished !!!
     //P2
     override suspend fun joinRoom(): Flow<DataState<String>> = callbackFlow {
         offer(DataState.Loading)
@@ -860,7 +853,7 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
-    //P2 //**
+    //P2
     override suspend fun observeInvitation(): Flow<DataState<String>> = callbackFlow {
 
         val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("rival-id")
@@ -870,13 +863,12 @@ class FirebaseRepository @Inject constructor(
                     offer(DataState.Success(snapshot.getValue(String::class.java)))
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
 
         })
-
+        observeInvitation[ref] = listener
         awaitClose {
             cancel()
         }
@@ -920,7 +912,7 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
-    //P1 //**
+    //P1
     override suspend fun observeInvitationAnswer(userId: String): Flow<DataState<Int>> = callbackFlow {
 
         val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userId).child("accept")
@@ -996,7 +988,7 @@ class FirebaseRepository @Inject constructor(
             cancel()
         }
     }
-    //P2 //**
+    //P2
     override suspend fun observeRoomId(): Flow<DataState<String>> = callbackFlow {
 
         val ref = firebaseProvider.realTime.getReference(FirebaseProvider.REALTIME_USERS).child(userSharedPref.getUserPref().id!!).child("room-id")

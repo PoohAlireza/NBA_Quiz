@@ -1,5 +1,6 @@
 package com.some_package.nbaquiz.ui.main
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.some_package.nbaquiz.firebase.FirebaseProvider
 import com.some_package.nbaquiz.model.User
@@ -16,6 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val localRepository: LocalRepository , private val firebaseRepository: FirebaseRepository
 , private val savedStateHandle: SavedStateHandle ) : ViewModel() {
+
+    private val TAG = "MainViewModel"
 
     private val _userData:MutableLiveData<User> = MutableLiveData()
     val userData:LiveData<User>
@@ -93,9 +96,8 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
 
     fun answerToInvite(answer:Int){
         viewModelScope.launch {
-            if (answer == FirebaseProvider.INVITE_ANSWER_DECLINE) declineInvite()
             firebaseRepository.answerToInvitation(answer).collect {
-
+                if (answer == FirebaseProvider.INVITE_ANSWER_DECLINE) declineInvite()
             }
         }
     }
@@ -103,6 +105,8 @@ class MainViewModel @Inject constructor(private val localRepository: LocalReposi
     private suspend fun declineInvite(){
         firebaseRepository.resetUserAttrsInRealTime(resetStatus = true,resetRivalId = true,resetRoomId = true,resetAnswerStatus = true).collect {
 
+            detachObserveInvitation()
+            observeInvitation()
         }
     }
 

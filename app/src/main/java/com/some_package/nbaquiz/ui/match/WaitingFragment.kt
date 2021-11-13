@@ -20,7 +20,11 @@ import com.some_package.nbaquiz.model.User
 import com.some_package.nbaquiz.util.DataState
 import com.some_package.nbaquiz.util.StaticHolder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -297,6 +301,10 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                     warningTV.text = it.warning
                     progress.visibility = View.GONE
                     warningTV.visibility = View.VISIBLE
+                    CoroutineScope(Main).launch {
+                        delay(1000)
+                        requireActivity().finish()
+                    }
                 }
                 is DataState.Success -> {
                     viewModel.observeInvitationAnswer(requireActivity().intent.getStringExtra("user_id")!!)
@@ -322,6 +330,10 @@ class WaitingFragment : Fragment(R.layout.fragment_waiting) {
                         warningTV.text = "Your request rejected"
                         progress.visibility = View.GONE
                         warningTV.visibility = View.VISIBLE
+                        CoroutineScope(Main).launch {
+                            delay(1000)
+                            requireActivity().finish()
+                        }
                     }
                 }
                 is DataState.Error -> {
